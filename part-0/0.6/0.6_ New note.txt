@@ -1,0 +1,12 @@
+title 0.6: New note
+
+note over Browser:
+  Prevent Submit action | e.preventDefault()
+  {"message":"note created"}
+  {"content":"0.6: New note","date":"2019-09-27T23:44:50.503Z"}
+end note
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+note over Server
+  Server saves new note
+end note
+Server-->Browser: Status Code: 201 Created

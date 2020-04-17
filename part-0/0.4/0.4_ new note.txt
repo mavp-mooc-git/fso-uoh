@@ -1,0 +1,16 @@
+title 0.4: new note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server-->Browser: HTML-code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server-->Browser: main.css file
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server-->Browser: main.js file
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server-->Browser: [{content: "HTML is easy", date: "2019-05-23T17:30:31.098Z"},...]
+Browser->Server: <form action="/new_note" method="POST">
+note left of Server
+  HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+  Status Code: 302 Found    Location: /notes
+end note
+Server-->Browser: {content: "0.4: new note", date: "2019-09-22T01:49:54.370Z"}
