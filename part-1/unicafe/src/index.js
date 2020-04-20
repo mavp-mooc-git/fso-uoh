@@ -3,6 +3,24 @@ import ReactDOM from 'react-dom'
 
 const Header = () => <h1>give feedback</h1>
 
+const Button = ({ onClick, text }) => (
+  <button onClick={onClick}>
+    {text}
+  </button>
+)
+
+const Statistic = (props) => {
+  const {text, value} = props
+  if(text === "positive: ") {
+    return (
+      <div> {text} {value} % </div>
+    )
+  }
+  return (
+    <div> {text} {value} </div>
+  )
+}
+
 const Statistics = (props) => {
   const {good, neutral, bad, all, average, positive} = props
   if(all === 0) {
@@ -16,14 +34,14 @@ const Statistics = (props) => {
   return (
     <>
       <h2>statistics</h2>
-      <p>
-        good {good} <br />
-        neutral {neutral} <br />
-        bad {bad} <br />
-        all {all} <br />
-        average {average} <br />
-        positive {positive} %
-      </p>
+      <div>
+        <Statistic text="good: " value ={good} />
+        <Statistic text="neutral: " value ={neutral} />
+        <Statistic text="bad: " value ={bad} />
+        <Statistic text="all: " value ={all} />
+        <Statistic text="average: " value ={average} />
+        <Statistic text="positive: " value ={positive} />
+      </div>
     </>
   )
 }
@@ -37,18 +55,16 @@ const App = () => {
   const average = (all > 0) ? (good - bad) / all : 0
   const positive = (all > 0) ? (good / all) * 100 : 0
 
+  const handleGoodClick = () => setGood(good + 1)
+  const handleNeutralClick = () => setNeutral(neutral + 1)
+  const handleBadClick = () => setBad(bad + 1)
+
   return (
     <div>
       <Header />
-      <button onClick={() => setGood(good + 1)}>
-        good
-      </button> &nbsp;
-      <button onClick={() => setNeutral(neutral + 1)}>
-        neutral
-      </button> &nbsp;
-      <button onClick={() => setBad(bad + 1)}>
-        bad
-      </button>
+      <Button onClick={handleGoodClick} text='good' />&nbsp;
+      <Button onClick={handleNeutralClick} text='neutral' />&nbsp;
+      <Button onClick={handleBadClick} text='bad' />
       <Statistics good={good} neutral={neutral} bad={bad}
                   all={all} average={average} positive={positive} />
     </div>
