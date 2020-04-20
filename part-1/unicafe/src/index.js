@@ -5,6 +5,14 @@ const Header = () => <h1>give feedback</h1>
 
 const Statistics = (props) => {
   const {good, neutral, bad, all, average, positive} = props
+  if(all === 0) {
+    return (
+      <>
+        <h2>statistics</h2>
+        <p>No feedback given</p>
+      </>
+    )
+  }
   return (
     <>
       <h2>statistics</h2>
