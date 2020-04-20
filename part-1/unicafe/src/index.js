@@ -11,13 +11,24 @@ const Button = ({ onClick, text }) => (
 
 const Statistic = (props) => {
   const {text, value} = props
-  if(text === "positive: ") {
-    return (
-      <div> {text} {value} % </div>
-    )
+  const tableStyle = {
+    width: "40%"
+  }
+  let newvalue = value
+  if(text === "positive") {
+    newvalue = value + " %"
   }
   return (
-    <div> {text} {value} </div>
+    <>
+      <table style={tableStyle}>
+        <tbody>
+          <tr>
+            <td style={tableStyle}>{text}</td>
+            <td>{newvalue}</td>
+          </tr>
+        </tbody>
+      </table>
+    </>
   )
 }
 
@@ -35,12 +46,12 @@ const Statistics = (props) => {
     <>
       <h2>statistics</h2>
       <div>
-        <Statistic text="good: " value ={good} />
-        <Statistic text="neutral: " value ={neutral} />
-        <Statistic text="bad: " value ={bad} />
-        <Statistic text="all: " value ={all} />
-        <Statistic text="average: " value ={average} />
-        <Statistic text="positive: " value ={positive} />
+        <Statistic text="good" value ={good} />
+        <Statistic text="neutral" value ={neutral} />
+        <Statistic text="bad" value ={bad} />
+        <Statistic text="all" value ={all} />
+        <Statistic text="average" value ={average} />
+        <Statistic text="positive" value ={positive} />
       </div>
     </>
   )
