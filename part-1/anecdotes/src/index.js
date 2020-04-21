@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+const points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+
 const App = (props) => {
+  const anecdotes = props.anecdotes
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState({...points})
 
   const handleClick = () => {
     const value = Math.floor(Math.random()*6)
@@ -10,9 +14,19 @@ const App = (props) => {
     setSelected(value)
   }
 
+  const handleVoteClick = (index) => () => {
+    votes[index] += 1
+    console.log(votes)
+    setVotes(JSON.parse(JSON.stringify(votes)))
+  }
+
   return (
     <div>
-      {props.anecdotes[selected]}<br />
+      <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} vote(s)</p>
+      <button onClick={handleVoteClick(selected)}>
+        vote
+      </button>&nbsp;
       <button onClick={handleClick}>
         next anecdote
       </button>
