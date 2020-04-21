@@ -3,6 +3,19 @@ import ReactDOM from 'react-dom'
 
 const points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
 
+const MostVotes = (props) => {
+  const anecdotes = props.anecdotes
+  let arr = Object.values(props.votes);
+  let max = Math.max(...arr);
+  let index  = arr.indexOf(max);
+  return (
+    <>
+    {anecdotes[index]}
+    <p>has {max} votes</p>
+    </>
+  )
+}
+
 const App = (props) => {
   const anecdotes = props.anecdotes
   const [selected, setSelected] = useState(0)
@@ -22,14 +35,17 @@ const App = (props) => {
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} vote(s)</p>
+      <h2>Anecdote of the day</h2>
+      <p>{anecdotes[selected]}<br />
+          has {votes[selected]} vote(s)</p>
       <button onClick={handleVoteClick(selected)}>
         vote
       </button>&nbsp;
       <button onClick={handleClick}>
         next anecdote
       </button>
+      <h2>Anecdote with most votes</h2>
+      <MostVotes anecdotes={anecdotes} votes={votes} />
     </div>
   )
 }
