@@ -6,8 +6,8 @@ const Header = ({name}) => <h1>{name}</h1>
 const Part = ({part, exercise}) => <p>{part} {exercise}</p>
 
 const Content = ({parts}) => {
-  let total = 0
-  parts.map((p) => total += p.exercises)
+  const array = parts.map(p => p.exercises)
+  const total = array.reduce((ac, p) => ac += p )
   return (
     <>
       <Part part={parts[0].name} exercise={parts[0].exercises} />
