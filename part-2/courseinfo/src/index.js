@@ -1,16 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = ({title}) => <h1>{title}</h1>
+const Header = ({name}) => <h1>{name}</h1>
 
 const Part = ({part, exercise}) => <p>{part} {exercise}</p>
 
 const Content = ({parts}) => {
+  let total = 0
+  parts.map((p) => total += p.exercises)
   return (
     <>
       <Part part={parts[0].name} exercise={parts[0].exercises} />
       <Part part={parts[1].name} exercise={parts[1].exercises} />
       <Part part={parts[2].name} exercise={parts[2].exercises} />
+      <Part part={parts[3].name} exercise={parts[3].exercises} />
+      <p><strong>total of {total} exercices</strong></p>
     </>
   )
 }
@@ -18,7 +22,7 @@ const Content = ({parts}) => {
 const Course = ({course}) => {
   return (
     <>
-      <Header title={course.name} />
+      <Header name={course.name} />
       <Content parts={course.parts} />
     </>
   )
@@ -43,6 +47,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
