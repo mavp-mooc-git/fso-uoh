@@ -1,23 +1,28 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = (props) => <h1>{props.course}</h1>
+const Header = ({title}) => <h1>{title}</h1>
 
-const Part = (props) => <p>{props.part} {props.exercise}</p>
+const Part = ({part, exercise}) => <p>{part} {exercise}</p>
 
-const Content = (props) => {
+const Content = ({parts}) => {
   return (
     <>
-      <Part part={props.parts[0].name} exercise={props.parts[0].exercises} />
-      <Part part={props.parts[1].name} exercise={props.parts[1].exercises} />
-      <Part part={props.parts[2].name} exercise={props.parts[2].exercises} />
+      <Part part={parts[0].name} exercise={parts[0].exercises} />
+      <Part part={parts[1].name} exercise={parts[1].exercises} />
+      <Part part={parts[2].name} exercise={parts[2].exercises} />
     </>
   )
 }
 
-const Total = (props) => <p>Number of exercises {props.total[0] +
-                          props.total[1] +
-                          props.total[2]}</p>
+const Course = ({course}) => {
+  return (
+    <>
+      <Header title={course.name} />
+      <Content parts={course.parts} />
+    </>
+  )
+}
 
 const App = () => {
   const course = {
