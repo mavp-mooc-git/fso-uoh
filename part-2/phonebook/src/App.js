@@ -11,8 +11,13 @@ const App = () => {
     const personObject = {
       name: newName,
     }
-    setPersons(persons.concat(personObject))
-    setNewName('')
+    const aux = persons.map(p => p.name)
+    if(aux.indexOf(newName) !== -1) {
+      window.alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons(persons.concat(personObject))
+      setNewName('')
+    }
   }
 
   const handleNameChange = (event) => {
@@ -22,7 +27,6 @@ const App = () => {
 
   return (
     <div>
-      {JSON.stringify(persons)}
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
