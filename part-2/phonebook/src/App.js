@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -44,37 +47,19 @@ const App = () => {
     setShowPersons(event.target.value)
   }
 
-  const rows = () => {
-    const aux = persons.filter(p => p.name.toLowerCase().indexOf(showPersons.toLowerCase()) > -1)
-    const result = aux.map(p => [p.name, p.number])
-    return (
-      result.map((p) => {
-        const [name, number] = [p[0], p[1]]
-        return <p key={name}> {name} {number} </p>
-      })
-    )
-  }
-
   return (
     <div>
       <h1>Phonebook</h1>
-      <div>
-        filter shown with: <input value={showPersons} onChange={handleChangePersons} />
-      </div>
-      <form onSubmit={addPerson}>
-        <h2>add a new</h2>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter value={showPersons} event={handleChangePersons} />
+
+      <h2>Add a new</h2>
+      <PersonForm action={addPerson}
+          valname={newName} evname={handleNameChange}
+          valnumber={newNumber} evnumber={handleNumberChange}
+      />
+
       <h2>Numbers</h2>
-      {rows()}
+      <Persons obj={persons} query={showPersons} />
     </div>
   )
 }
