@@ -21,6 +21,11 @@ const App = () => {
     setShowCountries(event.target.value)
   }
 
+  const handleSetCountry = (event) => {
+    event.preventDefault()
+    setShowCountries(event.target.id)
+  }
+
   const rows = () => {
     const aux = countries.filter(p => p.name.toLowerCase().indexOf(showCountries.toLowerCase()) > -1)
     const long = aux.length
@@ -32,7 +37,7 @@ const App = () => {
 
     if(long > 1 && long < 10) {
       result = aux.map((p,i) => {
-        return <p key={i}> {p.name} </p>
+        return <p key={i}> {p.name} <button type="button" id={p.name} onClick={handleSetCountry}>show</button> </p>
       })
       return result
     }
