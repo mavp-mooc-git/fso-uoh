@@ -62,6 +62,20 @@ const App = () => {
     setShowPersons(event.target.value)
   }
 
+  const handleDelete = (id, obj) => {
+    const delname = () => obj.filter(p => p.id.toString().toLowerCase().indexOf(id.toString().toLowerCase()) !== -1)
+    const newobj = () => obj.filter(p => p.id.toString().toLowerCase().indexOf(id.toString().toLowerCase()) === -1)
+    const elem = delname()[0].name
+    if (window.confirm(`Do you want to delete ${elem}?`)) {
+      personService
+      .remove(id)
+      .then(setPersons(newobj))
+      .catch(error => {
+        console.log('Fail handleDelete', error)
+      })
+    }
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -74,7 +88,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons obj={persons} query={showPersons} />
+      <Persons obj={persons} query={showPersons} callback={handleDelete} />
     </div>
   )
 }
