@@ -12,6 +12,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ showPersons, setShowPersons ] = useState('')
   const [ showMessage, setShowMessage ] = useState(null)
+  const [typeClass, setTypeClass] = useState(null)
 
   const hook = () => {
     personService
@@ -20,13 +21,15 @@ const App = () => {
         setPersons(initialPersons)
       })
       .catch(error => {
-        console.log('Fail promise', error)
+        //console.log('Fail promise', error)
+        newMessage(error.toString(), 'fail')
       })
   }
   useEffect(hook, [])
 
-  const newMessage = (msg) => {
+  const newMessage = (msg, type) => {
     setShowMessage(msg)
+    setTypeClass(type)
     setTimeout(() => {
       setShowMessage(null)
     }, 5000)
@@ -55,12 +58,13 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        newMessage(`Added: ${newName}`)
+        newMessage(`Added: ${newName}`, 'msg')
         setNewName('')
         setNewNumber('')
       })
       .catch(error => {
-        console.log('Fail promise', error)
+        //console.log('Fail promise', error)
+        newMessage(error.toString(), 'fail')
       })
     }
   }
@@ -86,9 +90,13 @@ const App = () => {
     if (window.confirm(`Do you want to delete ${elem}?`)) {
       personService
       .remove(id)
-      .then(setPersons(newobj))
+      .then(() => {
+        setPersons(newobj)
+        newMessage(`Deleted person`, 'msg')
+      })
       .catch(error => {
-        console.log('Fail handleDelete', error)
+        //console.log('Fail handleDelete', error)
+        newMessage(error.toString(), 'fail')
       })
     }
   }
@@ -100,12 +108,13 @@ const App = () => {
     .update(id, changedPerson)
     .then(returnedPerson => {
       setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
-      newMessage(`Updated: ${newName}`)
+      newMessage(`Updated: ${newName}`, 'msg')
       setNewName('')
       setNewNumber('')
     })
     .catch(error => {
       console.log('Fail handleUpdate', error)
+      newMessage(`Information of ${newName} has already been removed from server`, 'fail')
     })
   }
 
@@ -113,7 +122,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
 
-      <Notification message={showMessage} />
+      <Notification message={showMessage} type={typeClass} />
 
       <Filter value={showPersons} event={handleChangePersons} />
 
