@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 import personService from './services/persons'
+import './index.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ showPersons, setShowPersons ] = useState('')
+  const [ showMessage, setShowMessage ] = useState(null)
 
   const hook = () => {
     personService
@@ -21,6 +24,13 @@ const App = () => {
       })
   }
   useEffect(hook, [])
+
+  const newMessage = (msg) => {
+    setShowMessage(msg)
+    setTimeout(() => {
+      setShowMessage(null)
+    }, 5000)
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -45,6 +55,7 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        newMessage(`Added: ${newName}`)
         setNewName('')
         setNewNumber('')
       })
@@ -89,6 +100,7 @@ const App = () => {
     .update(id, changedPerson)
     .then(returnedPerson => {
       setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+      newMessage(`Updated: ${newName}`)
       setNewName('')
       setNewNumber('')
     })
@@ -100,6 +112,9 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+
+      <Notification message={showMessage} />
+
       <Filter value={showPersons} event={handleChangePersons} />
 
       <h2>Add a new</h2>
