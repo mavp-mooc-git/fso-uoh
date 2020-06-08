@@ -33,9 +33,13 @@ const App = () => {
     else if(newName === "" || newNumber === "" ) {
       window.alert("name or number fields can't be empty");
     } else {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
     }
   }
 
