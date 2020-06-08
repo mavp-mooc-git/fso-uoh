@@ -28,9 +28,15 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    const aux = persons.map(p => p.name)
-    if(aux.indexOf(newName) !== -1) {
-      window.alert(`${newName} is already added to phonebook`);
+    const pname = persons.map(p => p.name)
+
+    if(pname.indexOf(newName) !== -1) {
+      const idx = pname.indexOf(newName)
+      const pid = persons[idx].id
+      window.alert(
+        `${newName} is already added to phonebook, replace the old number with a new one.`
+      );
+      handleUpdate(pid)
     }
     else if(newName === "" || newNumber === "" ) {
       window.alert("name or number fields can't be empty");
@@ -74,6 +80,21 @@ const App = () => {
         console.log('Fail handleDelete', error)
       })
     }
+  }
+
+  const handleUpdate = (id) => {
+    const person = persons.find(p => p.id === id)
+    const changedPerson = { ...person, name: newName, number: newNumber }
+    personService
+    .update(id, changedPerson)
+    .then(returnedPerson => {
+      setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+      setNewName('')
+      setNewNumber('')
+    })
+    .catch(error => {
+      console.log('Fail handleUpdate', error)
+    })
   }
 
   return (
