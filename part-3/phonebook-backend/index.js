@@ -58,6 +58,9 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+morgan.token('rpost', (request) => JSON.stringify(request.body))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :rpost'))
+
 const newID = () => {
   const maxId = persons.length > 0
     ? Math.max(...persons.map(n => n.id))
