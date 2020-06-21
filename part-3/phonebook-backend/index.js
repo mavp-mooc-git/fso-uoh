@@ -26,7 +26,15 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  response.send(console.log("Responds to: delete /api/persons/:id"))
+  Person
+  .findByIdAndRemove(request.params.id)
+  .then(result => {
+    response.status(204).end()
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(404).end()
+  })
 })
 
 morgan.token('rpost', (request) => JSON.stringify(request.body))

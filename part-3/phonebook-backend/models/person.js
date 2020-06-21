@@ -4,7 +4,11 @@ const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
 
-mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect(url, {
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+})
   .then(result => {
     console.log('connected to MongoDB')
   })
