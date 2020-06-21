@@ -33,7 +33,23 @@ morgan.token('rpost', (request) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :rpost'))
 
 app.post('/api/persons', (request, response) => {
-  response.send(console.log("Responds to: post /api/persons"))
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'content missing'
+    })
+  }
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save()
+  .then(savedPerson => {
+    response.json(savedPerson.toJSON())
+  })
 })
 
 const PORT = process.env.PORT || 3001
