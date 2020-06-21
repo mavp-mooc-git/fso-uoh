@@ -20,7 +20,12 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  response.send(console.log("Responds to: /info"))
+  Person
+    .countDocuments({})
+    .then(result => {
+      const date = new Date()
+      response.send(`<p>Phonebook has info for ${result} people</p><p>${date}</p>`)
+    })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
