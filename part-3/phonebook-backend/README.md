@@ -1,19 +1,12 @@
-## 3.11 phonebook full stack
+## 3.21 Deploying the database backend to production
 
-Generate a production build of your frontend, and add it to the internet application using the method introduced in this part.
+Generate a new "full stack" version of the application by creating a new production build of the frontend, and copy it to the backend repository. Verify that everything works locally by using the entire application from the address https://localhost:3001.
 
-NB Make sure the directory build is not gitignored.
+Push the latest version to Heroku and verify that everything works there as well.
 
-Also make sure that the frontend still works locally.
-
-
-commit part3-11 - phonebook full stack
+commit part3-21 - Deploying the database backend to production
 
 previously uploaded 2019 version.
 - [herokuapp.com][url1]
-- [herokuapp.com//info][url2]
-- [herokuapp.com//api/persons/][url3]
 
 [url1]: https://shielded-thicket-14811.herokuapp.com/
-[url2]: https://shielded-thicket-14811.herokuapp.com/info
-[url3]: https://shielded-thicket-14811.herokuapp.com/api/persons/
