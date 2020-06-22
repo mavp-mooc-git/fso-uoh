@@ -87,8 +87,18 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
+  /**
+   * Mongoose also supports validation for update(), updateOne(), updateMany(),
+   * and findOneAndUpdate() operations.
+   * Update validators are off by default - you need to specify the
+   * runValidators option. { runValidators: true }
+   * So findByIdAndUpdate it is not supported.
+   */
   Person
-    .findByIdAndUpdate(request.params.id, person, { new: true })
+    .findByIdAndUpdate(request.params.id, person, {
+      new: true,
+      runValidators: true
+    })
     .then(updatedPerson => updatedPerson.toJSON())
     .then(result => {
       response.json(result)

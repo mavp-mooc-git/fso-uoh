@@ -63,8 +63,8 @@ const App = () => {
         setNewNumber('')
       })
       .catch(error => {
-        //console.log('Fail promise', error)
-        newMessage(error.toString(), 'fail')
+        //newMessage(error.toString(), 'fail')
+        newMessage(JSON.stringify(error.response.data), 'fail')
       })
     }
   }
