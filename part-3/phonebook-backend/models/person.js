@@ -11,7 +11,7 @@ mongoose.connect(url, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 })
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch((error) => {
@@ -39,6 +39,6 @@ personSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
-personSchema.plugin(uniqueValidator, { type: 'mongoose-unique-validator' });
+personSchema.plugin(uniqueValidator, { type: 'mongoose-unique-validator' })
 
 module.exports = mongoose.model('Person', personSchema)
