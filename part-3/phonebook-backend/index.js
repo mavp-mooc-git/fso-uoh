@@ -11,21 +11,24 @@ app.use(bodyParser.json())
 app.use(morgan('tiny'))
 app.use(cors())
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Person
     .find({})
-    .then(persons => {
-      response.json(persons.map(p => p.toJSON()))
+    .then(persons => persons.map(p => p.toJSON()) )
+    .then(result => {
+      response.json(result)
     })
+    .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   Person
     .countDocuments({})
     .then(result => {
       const date = new Date()
       response.send(`<p>Phonebook has info for ${result} people</p><p>${date}</p>`)
     })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -53,7 +56,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 morgan.token('rpost', (request) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :rpost'))
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name || !body.number) {
@@ -69,9 +72,11 @@ app.post('/api/persons', (request, response) => {
 
   person
     .save()
-    .then(savedPerson => {
-      response.json(savedPerson.toJSON())
+    .then(savedPerson => savedPerson.toJSON())
+    .then(result => {
+      response.json(result)
     })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -84,8 +89,9 @@ app.put('/api/persons/:id', (request, response, next) => {
 
   Person
     .findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedPerson => {
-      response.json(updatedPerson.toJSON())
+    .then(updatedPerson => updatedPerson.toJSON())
+    .then(result => {
+      response.json(result)
     })
     .catch(error => next(error))
 })
@@ -105,7 +111,12 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({
       error: 'malformatted id'
     })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({
+      error: error.message
+    })
+  }
+
   next(error)
 }
 // handler of requests with result to errors
