@@ -76,6 +76,19 @@ describe('total likes', () => {
   })
 })
 
+describe('favorite Blog', () => {
+  const favoriteBlog = listHelper.favoriteBlog
+  const favorite = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    likes: 12
+  }
+
+  test('finds out which blog has most likes', () => {
+    expect(favoriteBlog(blogs)).toEqual(favorite)
+  })
+})
+
 /*
   running a single test (or describe block) from the command line:
   npx jest -t 'test_name'
