@@ -17,8 +17,25 @@ const favoriteBlog = blogs => {
   }
 }
 
+const mostBlogs = blogs => {
+  const arr = blogs.map(p => p.author)
+  const mblog = arr.reduce((ac, arr) => {
+    ac[arr] = (ac[arr] || 0) +1
+    return ac
+  }, {})
+  const values = Object.values(mblog)
+  const max = Math.max(...values)
+  const idx = values.findIndex(values => values === max)
+  const name = Object.keys(mblog)[idx]
+  return {
+    author: name,
+    blogs: max
+  }
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }

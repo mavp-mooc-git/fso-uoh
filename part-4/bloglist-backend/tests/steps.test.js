@@ -76,7 +76,7 @@ describe('total likes', () => {
   })
 })
 
-describe('favorite Blog', () => {
+describe('tests Blog', () => {
   const favoriteBlog = listHelper.favoriteBlog
   const favorite = {
     title: 'Canonical string reduction',
@@ -86,6 +86,16 @@ describe('favorite Blog', () => {
 
   test('finds out which blog has most likes', () => {
     expect(favoriteBlog(blogs)).toEqual(favorite)
+  })
+
+  const mostBlogs = listHelper.mostBlogs
+  const most = {
+    author: 'Robert C. Martin',
+    blogs: 3
+  }
+
+  test('author who has the largest amount of blogs', () => {
+    expect(mostBlogs(blogs)).toEqual(most)
   })
 })
 
