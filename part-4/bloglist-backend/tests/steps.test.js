@@ -89,14 +89,25 @@ describe('tests Blog', () => {
   })
 
   const mostBlogs = listHelper.mostBlogs
-  const most = {
+  const moreblog = {
     author: 'Robert C. Martin',
     blogs: 3
   }
 
   test('author who has the largest amount of blogs', () => {
-    expect(mostBlogs(blogs)).toEqual(most)
+    expect(mostBlogs(blogs)).toEqual(moreblog)
   })
+
+  const mostLikes = listHelper.mostLikes
+  const morelike = {
+    author: 'Edsger W. Dijkstra',
+    likes: 17
+  }
+
+  test('whose blog posts have the largest amount of likes', () => {
+    expect(mostLikes(blogs)).toEqual(morelike)
+  })
+
 })
 
 /*
