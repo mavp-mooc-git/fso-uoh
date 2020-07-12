@@ -106,6 +106,19 @@ describe('addition of a new blog', () => {
     expect(titles).toContain('async/await simplifies making async calls')
   })
 
+  test('update likes blog with valid data', async () => {
+    const blogToUpdate = await helper.blogsInDb()
+    const blogToView = await blogToUpdate[5]
+    blogToView.likes += 3
+    const updateBlog = await api
+      .put(`/api/blogs/${blogToView.id}`)
+      .send(blogToView)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(updateBlog.body.likes).toEqual(blogToView.likes)
+  })
+
   test('fails with status code 400 if data-likes invalid', async () => {
     const newBlog = {
       title: 'async/await simplifies making async calls',
