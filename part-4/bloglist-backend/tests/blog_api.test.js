@@ -50,6 +50,12 @@ test('a specific blog is within the returned blogs', async () => {
   expect(titles).toContain('First class tests')
 })
 
+test('verifies the unique identifier property of blog posts', async () => {
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[0].id).toBeDefined()
+})
+
 /* This usually means that there are asynchronous operations
    that weren't stopped in your tests. Consider running Jest with
    `--detectOpenHandles` to troubleshoot this issue.
