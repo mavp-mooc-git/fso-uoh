@@ -9,9 +9,10 @@ const blogsRouter = require('./controllers/bloglists')
 const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
 
-logger.info('connecting to', config.MONGODB_URI)
+const mongoUrl = config.MONGODB_URI
+logger.info('connecting to', mongoUrl)
 
-mongoose.connect(config.MONGODB_URI, {
+mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
