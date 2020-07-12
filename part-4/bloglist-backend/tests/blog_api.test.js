@@ -70,12 +70,29 @@ test('a valid post can be added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
-  const titles = response.body.map(r => r.title)
-
-  expect(response.body.length).toBe(helper.initialBlogs.length + 1)
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+  const titles = blogsAtEnd.map(n => n.title)
   expect(titles).toContain('async/await simplifies making async calls')
 })
+
+test('blog without likes is not added', async () => {
+  const newBlog = {
+    title: 'async/await simplifies making async calls',
+    author: 'Chris Nwamba',
+    url: 'https://blog.pusher.com/promises-async-await/',
+    likes: ''
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
 
 /* This usually means that there are asynchronous operations
    that weren't stopped in your tests. Consider running Jest with
