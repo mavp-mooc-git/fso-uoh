@@ -56,6 +56,27 @@ test('verifies the unique identifier property of blog posts', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('a valid post can be added', async () => {
+  const newBlog = {
+    title: 'async/await simplifies making async calls',
+    author: 'Chris Nwamba',
+    url: 'https://blog.pusher.com/promises-async-await/',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(r => r.title)
+
+  expect(response.body.length).toBe(helper.initialBlogs.length + 1)
+  expect(titles).toContain('async/await simplifies making async calls')
+})
+
 /* This usually means that there are asynchronous operations
    that weren't stopped in your tests. Consider running Jest with
    `--detectOpenHandles` to troubleshoot this issue.
