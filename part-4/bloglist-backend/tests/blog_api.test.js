@@ -93,6 +93,23 @@ test('blog without likes is not added', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+test('blog without title and url is not added', async () => {
+  const newBlog = {
+    title: '',
+    author: 'Chris Nwamba',
+    url: '',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
 
 /* This usually means that there are asynchronous operations
    that weren't stopped in your tests. Consider running Jest with
