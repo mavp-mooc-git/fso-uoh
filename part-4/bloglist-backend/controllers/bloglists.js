@@ -16,7 +16,6 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
-
 morgan.token('rpost', (request) => JSON.stringify(request.body))
 blogsRouter.use(morgan(':method :url :status :res[content-length] - :response-time ms :rpost'))
 
