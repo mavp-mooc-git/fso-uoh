@@ -16,7 +16,8 @@ logger.info('connecting to', mongoUrl)
 
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 })
   .then(() => {
     logger.info('connected to MongoDB')
