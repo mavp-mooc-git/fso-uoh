@@ -6,20 +6,23 @@ const app = require('../app')
 const api = supertest(app)
 const User = require('../models/user')
 
-describe('when there is initially one user at db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
+beforeEach(async () => {
+  /* Error: Timeout - Async callback was not invoked within
+  the 5000 ms timeout specified by jest.setTimeout. */
+  jest.setTimeout(10000)
+  await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({
-      username: 'root',
-      name: 'Superuser',
-      passwordHash
-    })
-
-    await user.save()
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({
+    username: 'root',
+    name: 'Superuser',
+    passwordHash
   })
 
+  await user.save()
+})
+
+describe('when there is initially one user at db', () => {
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
