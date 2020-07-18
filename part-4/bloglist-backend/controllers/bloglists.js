@@ -43,11 +43,13 @@ if (process.env.NODE_ENV !== 'test') {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
+  //const token = middleware.tokenExtractor(request)
 
   const token = getTokenFrom(request)
 
   const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
+  //if (!token || !decodedToken.id) {
+  if (!decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
