@@ -8,14 +8,6 @@ if (process.env.NODE_ENV !== 'test') {
   blogsRouter.use(morgan('tiny'))
 }
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
@@ -36,6 +28,25 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
+blogsRouter.delete('/:id', async (request, response) => {
+  const token = request.token
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+  const blog = await Blog.findById(request.params.id)
+
+  if ( blog.user.toString() === user.id.toString() ) {
+    await Blog.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } else {
+    response.status(401).json({ error: 'user isn\'t owner this blog' })
+  }
+})
+
 if (process.env.NODE_ENV !== 'test') {
   morgan.token('rpost', (request) => JSON.stringify(request.body))
   blogsRouter.use(morgan(':method :url :status :res[content-length] - :response-time ms :rpost'))
@@ -43,13 +54,10 @@ if (process.env.NODE_ENV !== 'test') {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  //const token = middleware.tokenExtractor(request)
-
-  const token = getTokenFrom(request)
+  const token = request.token
 
   const decodedToken = jwt.verify(token, process.env.SECRET)
-  //if (!token || !decodedToken.id) {
-  if (!decodedToken.id) {
+  if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
@@ -71,13 +79,18 @@ blogsRouter.post('/', async (request, response) => {
   response.json(savedBlog.toJSON())
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
-})
-
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
+  const token = request.token
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+  const listblog = await Blog
+    .findById(request.params.id)
 
   const blog = {
     title: body.title,
@@ -86,10 +99,13 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes
   }
 
-  const updatedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, blog, { new: true })
-  response.status(201)
-  response.json(updatedBlog.toJSON())
+  if ( listblog.user.toString() === user.id.toString() ) {
+    await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    response.status(201)
+    response.json(blog)
+  } else {
+    response.status(401).json({ error: 'user isn\'t owner this blog' })
+  }
 })
 
 module.exports = blogsRouter
