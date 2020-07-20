@@ -5,6 +5,18 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
+let token = ''
+
+beforeAll(async () => {
+  const auth = await api
+    .post('/api/login/')
+    .send({
+      username: 'root',
+      password: 'sekret'
+    })
+  token = auth.body.token
+})
+
 beforeEach(async () => {
   /* Error: Timeout - Async callback was not invoked within
   the 5000 ms timeout specified by jest.setTimeout. */
@@ -95,6 +107,8 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      //.set('Content-Type', 'application/json')
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -106,12 +120,51 @@ describe('addition of a new blog', () => {
     expect(titles).toContain('async/await simplifies making async calls')
   })
 
+  test('fail with status code 401 if token is not provided', async () => {
+    const newBlog = {
+      title: 'async/await simplifies making async calls',
+      author: 'Chris Nwamba',
+      url: 'https://blog.pusher.com/promises-async-await/',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+    const titles = blogsAtEnd.map(n => n.title)
+    expect(titles).not.toContain('async/await simplifies making async calls')
+  })
+
   test('update likes blog with valid data', async () => {
+    const newBlog = {
+      title: 'async/await simplifies making async calls',
+      author: 'Chris Nwamba',
+      url: 'https://blog.pusher.com/promises-async-await/',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtStart = await helper.blogsInDb()
+    expect(blogsAtStart).toHaveLength(helper.initialBlogs.length + 1)
+
     const blogToUpdate = await helper.blogsInDb()
-    const blogToView = await blogToUpdate[5]
+    const blogToView = await blogToUpdate[6]
     blogToView.likes += 3
     const updateBlog = await api
       .put(`/api/blogs/${blogToView.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(blogToView)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -128,6 +181,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -145,6 +199,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -156,7 +211,6 @@ describe('addition of a new blog', () => {
 describe('deletion of a blog', () => {
   test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
-
     const blogToView = blogsAtStart[0]
 
     const resultBlog = await api
@@ -168,15 +222,32 @@ describe('deletion of a blog', () => {
   })
 
   test('succeeds with status code 204 if id is valid', async () => {
+    const newBlog = {
+      title: 'async/await simplifies making async calls',
+      author: 'Chris Nwamba',
+      url: 'https://blog.pusher.com/promises-async-await/',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
     const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    expect(blogsAtStart).toHaveLength(helper.initialBlogs.length + 1)
+
+    const blogToDelete = blogsAtStart[6]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 
     const titles = blogsAtEnd.map(r => r.title)
     expect(titles).not.toContain(blogToDelete.title)
