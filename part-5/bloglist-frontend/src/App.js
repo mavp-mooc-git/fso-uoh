@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,12 +13,25 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [showMessage, setShowMessage] = useState(null)
+  const [typeClass, setTypeClass] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs(blogs)
+    )
+    .catch(error => {
+      newMessage(error.toString(), 'fail')
+    })
   }, [])
+
+  const newMessage = (msg, type) => {
+    setShowMessage(msg)
+    setTypeClass(type)
+    setTimeout(() => {
+      setShowMessage(null)
+    }, 5000)
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -26,6 +41,18 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const updateList = async () => {
+    try {
+      await blogService.getAll()
+        .then(blogs => setBlogs(blogs))
+        .catch(error => {
+          newMessage(error.toString(), 'fail')
+        })
+    } catch (exception) {
+      newMessage(exception.toString(), 'fail')
+    }
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -42,37 +69,40 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('error: ', exception)
+      newMessage(exception.toString(), 'fail')
     }
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
-    try {
-      const blogObject = {
-        title: newTitle,
-        author: newAuthor,
-        url: newUrl,
-        likes: 0
-      }
-      const aux = blogs.map(p => p.title)
-      if(aux.indexOf(newTitle) !== -1) {
-        window.alert(`${newTitle} is already added to blog`);
-      }
-      else if(newTitle === "" || newAuthor === "" || newUrl === "" ) {
-        window.alert("title, author or url fields can't be empty");
-      } else {
-        blogService
-          .create(blogObject)
-          .then(response => {
-            setBlogs(blogs.concat(response))
-            setNewTitle('')
-            setNewAuthor('')
-            setNewUrl('')
-          })
-      }
-    } catch (exception) {
-      console.log('error: ', exception)
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+      likes: 0
+    }
+    const aux = blogs.map(p => p.title)
+
+    if(aux.indexOf(newTitle) !== -1) {
+      newMessage(`${newTitle} is already added to blog`, 'fail')
+    }
+    else if(newTitle === "" || newAuthor === "" || newUrl === "" ) {
+      newMessage('title, author or url fields can\'t be empty', 'fail')
+    } else {
+      await blogService
+        .create(blogObject)
+        .then(response => {
+          setBlogs(blogs.concat(response))
+          newMessage(`a new blog: ${newTitle} added`, 'msg')
+          setNewTitle('')
+          setNewAuthor('')
+          setNewUrl('')
+        })
+        .catch(error => {
+          newMessage(error.toString(), 'fail')
+        })
+      // added because blog list doesn't refresh
+      updateList()
     }
   }
 
@@ -86,6 +116,7 @@ const App = () => {
     return (
       <>
         <h2>log in to application</h2>
+        <Notification message={showMessage} type={typeClass} />
         <form onSubmit={handleLogin}>
           <div>
             username &nbsp;
@@ -107,6 +138,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        <Notification message={showMessage} type={typeClass} />
         <p>
           {user.name} logged-in &nbsp;
           <button type="button" onClick={handleLogout}>logout</button>
