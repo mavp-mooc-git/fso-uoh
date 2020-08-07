@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import './index.css'
 
 const App = () => {
+  const [createVisible, setCreateVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -103,6 +104,7 @@ const App = () => {
         })
       // added because blog list doesn't refresh
       updateList()
+      setCreateVisible(false)
     }
   }
 
@@ -135,6 +137,9 @@ const App = () => {
   }
 
   const blogsDetails = () => {
+    const hideWhenVisible = { display: createVisible ? 'none' : '' }
+    const showWhenVisible = { display: createVisible ? '' : 'none' }
+
     return (
       <div>
         <h2>blogs</h2>
@@ -143,35 +148,42 @@ const App = () => {
           {user.name} logged-in &nbsp;
           <button type="button" onClick={handleLogout}>logout</button>
         </p>
-        <h3>create new blog</h3>
-        <form onSubmit={addBlog}>
-          <div>
-            title: &nbsp;
-            <input type='text' value={newTitle} name='newTitle'
-            onChange={({ target }) => setNewTitle(target.value)} />
-          </div>
-          <div>
-            author: &nbsp;
-            <input type='text' value={newAuthor} name='newAuthor'
-            onChange={({ target }) => setNewAuthor(target.value)} />
-          </div>
-          <div>
-            url: &nbsp;
-            <input type='text' value={newUrl} name='newUrl'
-            onChange={({ target }) => setNewUrl(target.value)} />
-          </div>
-          <div>
-            <button type="submit">create</button>
-          </div>
-        </form>
-        {blogs.map(blog => {
-          if(blog.hasOwnProperty('user')) {
-            if(blog.user.name === user.name ) {
-              return <Blog key={blog.id} blog={blog} />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateVisible(true)}>new blog</button>
+          {blogs.map(blog => {
+            if(blog.hasOwnProperty('user')) {
+              if(blog.user.name === user.name ) {
+                return <Blog key={blog.id} blog={blog} />
+              }
             }
-          }
-          return false
-        } )}
+            return false
+          } )}
+        </div>
+
+        <div style={showWhenVisible}>
+          <h3>create new blog</h3>
+          <form onSubmit={addBlog}>
+            <div>
+              title: &nbsp;
+              <input type='text' value={newTitle} name='newTitle'
+              onChange={({ target }) => setNewTitle(target.value)} />
+            </div>
+            <div>
+              author: &nbsp;
+              <input type='text' value={newAuthor} name='newAuthor'
+              onChange={({ target }) => setNewAuthor(target.value)} />
+            </div>
+            <div>
+              url: &nbsp;
+              <input type='text' value={newUrl} name='newUrl'
+              onChange={({ target }) => setNewUrl(target.value)} />
+            </div>
+            <div>
+              <button type="submit">create</button>
+            </div>
+          </form>
+          <button onClick={() => setCreateVisible(false)}>cancel</button>
+        </div>
       </div>
     )
   }
