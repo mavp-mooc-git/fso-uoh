@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Notification from './components/Notification'
 import './index.css'
 
 const App = () => {
-  const [createVisible, setCreateVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
   const [showMessage, setShowMessage] = useState(null)
   const [typeClass, setTypeClass] = useState(null)
 
+  const blogFormRef = useRef()
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-    .catch(error => {
-      newMessage(error.toString(), 'fail')
-    })
+    blogService
+      .getAll()
+      .then(blogs =>
+        setBlogs(blogs)
+      )
+      .catch(error => {
+        newMessage(error.toString(), 'fail')
+      })
   }, [])
 
   const newMessage = (msg, type) => {
@@ -74,37 +77,29 @@ const App = () => {
     }
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-      likes: 0
-    }
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     const aux = blogs.map(p => p.title)
 
-    if(aux.indexOf(newTitle) !== -1) {
-      newMessage(`${newTitle} is already added to blog`, 'fail')
+    if(aux.indexOf(blogObject.title) !== -1) {
+      newMessage(`${blogObject.title} is already added to blog`, 'fail')
     }
-    else if(newTitle === "" || newAuthor === "" || newUrl === "" ) {
+    else if(blogObject.title === '' ||
+            blogObject.author === '' ||
+            blogObject.url === '' ) {
       newMessage('title, author or url fields can\'t be empty', 'fail')
     } else {
       await blogService
         .create(blogObject)
         .then(response => {
           setBlogs(blogs.concat(response))
-          newMessage(`a new blog: ${newTitle} added`, 'msg')
-          setNewTitle('')
-          setNewAuthor('')
-          setNewUrl('')
+          newMessage(`a new blog: ${blogObject.title} added`, 'msg')
         })
         .catch(error => {
           newMessage(error.toString(), 'fail')
         })
       // added because blog list doesn't refresh
       updateList()
-      setCreateVisible(false)
     }
   }
 
@@ -116,40 +111,35 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <>
-        <h2>log in to application</h2>
+      <div>
+        <h1>BLOGS</h1>
         <Notification message={showMessage} type={typeClass} />
-        <form onSubmit={handleLogin}>
-          <div>
-            username &nbsp;
-            <input type='text' value={username} name='Username'
-            onChange={({ target }) => setUsername(target.value)} />
-          </div>
-          <div>
-            password &nbsp;
-            <input type='password' value={password} name='Password'
-            onChange={({ target }) => setPassword(target.value)} />
-          </div>
-          <button type='submit'>login</button>
-        </form>
-      </>
+        <Togglable buttonLabel='login'>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleLogin={handleLogin}
+          />
+        </Togglable>
+      </div>
     )
   }
 
   const blogsDetails = () => {
-    const hideWhenVisible = { display: createVisible ? 'none' : '' }
-    const showWhenVisible = { display: createVisible ? '' : 'none' }
-
     return (
       <div>
         <h2>blogs</h2>
         <Notification message={showMessage} type={typeClass} />
         <p>
           {user.name} logged-in &nbsp;
-          <button type="button" onClick={handleLogout}>logout</button>
+          <button type='button' onClick={handleLogout}>logout</button>
         </p>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setCreateVisible(true)}>new blog</button>
+        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <BlogForm createBlog={addBlog} />
+        </Togglable>
+        <div>
           {blogs.map(blog => {
             if(blog.hasOwnProperty('user')) {
               if(blog.user.name === user.name ) {
@@ -158,31 +148,6 @@ const App = () => {
             }
             return false
           } )}
-        </div>
-
-        <div style={showWhenVisible}>
-          <h3>create new blog</h3>
-          <form onSubmit={addBlog}>
-            <div>
-              title: &nbsp;
-              <input type='text' value={newTitle} name='newTitle'
-              onChange={({ target }) => setNewTitle(target.value)} />
-            </div>
-            <div>
-              author: &nbsp;
-              <input type='text' value={newAuthor} name='newAuthor'
-              onChange={({ target }) => setNewAuthor(target.value)} />
-            </div>
-            <div>
-              url: &nbsp;
-              <input type='text' value={newUrl} name='newUrl'
-              onChange={({ target }) => setNewUrl(target.value)} />
-            </div>
-            <div>
-              <button type="submit">create</button>
-            </div>
-          </form>
-          <button onClick={() => setCreateVisible(false)}>cancel</button>
         </div>
       </div>
     )
