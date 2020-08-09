@@ -103,6 +103,17 @@ const App = () => {
     }
   }
 
+  const updateLikes = async (blogObject) => {
+    await blogService
+      .update(blogObject.id, blogObject)
+      .then(response => {
+        newMessage(`now ${response.title} has: ${response.likes} likes`, 'msg')
+      })
+      .catch(error => {
+        newMessage(error.toString(), 'fail')
+      })
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     // window.localStorage.clear() - clear all localstorage
@@ -143,7 +154,7 @@ const App = () => {
           {blogs.map(blog => {
             if(blog.hasOwnProperty('user')) {
               if(blog.user.name === user.name ) {
-                return <Blog key={blog.id} blog={blog} />
+                return <Blog key={blog.id} blog={blog} likesUp={updateLikes} />
               }
             }
             return false
