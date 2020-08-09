@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, likesUp }) => {
+const Blog = ({ blog, likesUp, delBlog }) => {
   const [shown, setShown] = useState(false)
 
   const blogStyle = {
@@ -11,6 +11,10 @@ const Blog = ({ blog, likesUp }) => {
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 3
+  }
+
+  const delButton = {
+    backgroundColor: '#FFB6C1'
   }
 
   const updateLikes = (upblog) => {
@@ -29,22 +33,41 @@ const Blog = ({ blog, likesUp }) => {
       return (
         <div style={{backgroundColor: '#F0FFFF'}}>
                {blog.title} &nbsp;
-          <button type='button' onClick={() => setShown(false)}>hide</button>
+          <button
+            type='button'
+            onClick={() => setShown(false)}>
+              hide
+          </button>
           <br />
           <a href={uri} rel="noopener noreferrer"
              target='_blank'>{blog.url}</a>
           <br />
           likes {blog.likes} &nbsp;
-          <button type='button' onClick={() => updateLikes(blog)}>like</button>
+          <button
+            type='button'
+            onClick={() => updateLikes(blog)}>
+              like
+          </button>
           <br />
           {blog.author}
+          <br />
+          <button
+            type='button'
+            style={delButton}
+            onClick={() => delBlog(blog)}>
+              Remove
+          </button>
         </div>
       )
     }
     return (
       <p>
         {blog.title} &nbsp;
-        <button type='button' onClick={() => setShown(true)}>view</button>
+        <button
+          type='button'
+          onClick={() => setShown(true)}>
+            view
+        </button>
       </p>
     )
   }

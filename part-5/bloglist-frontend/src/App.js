@@ -95,11 +95,11 @@ const App = () => {
           setBlogs(blogs.concat(response))
           newMessage(`a new blog: ${blogObject.title} added`, 'msg')
         })
+        // added because blog list doesn't refresh
+        .then(() => updateList() )
         .catch(error => {
           newMessage(error.toString(), 'fail')
         })
-      // added because blog list doesn't refresh
-      updateList()
     }
   }
 
@@ -112,6 +112,21 @@ const App = () => {
       .catch(error => {
         newMessage(error.toString(), 'fail')
       })
+  }
+
+  const delBlog = async (blogObject) => {
+    if(window.confirm(`remove blog ${blogObject.title} by ${blogObject.author}`)) {
+      blogService
+        .remove(blogObject.id)
+        .then(response => {
+          console.log(response)
+          newMessage(`${blogObject.title} has been deleted`, 'msg')
+        })
+        .then(() => updateList() )
+        .catch(error => {
+          newMessage(error.toString(), 'fail')
+        })
+    }
   }
 
   const handleLogout = () => {
@@ -145,7 +160,9 @@ const App = () => {
     const order = result().sort((a, b) => (a.likes > b.likes) ? -1 : 1)
     return (
       order.map((p) => {
-        return <Blog key={p.id} blog={p} likesUp={updateLikes} />
+        return <Blog key={p.id} blog={p}
+                     likesUp={updateLikes}
+                     delBlog={delBlog} />
       })
     )
   }
