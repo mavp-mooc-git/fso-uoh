@@ -7,9 +7,9 @@ const Notification = ({ message, type }) => {
   }
 
   return (
-      <div className={notclass}>
-        {message}
-      </div>
+    <div className={notclass}>
+      {message}
+    </div>
   )
 }
 

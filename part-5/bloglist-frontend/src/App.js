@@ -67,7 +67,7 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-        )
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -154,6 +154,7 @@ const App = () => {
   }
 
   const rows = () => {
+    // eslint-disable-next-line no-prototype-builtins
     const aux = () => blogs.filter(blog => blog.hasOwnProperty('user') &&
                                            blog.user.name === user.name)
     const result = () => aux().map(p => p)
@@ -161,8 +162,8 @@ const App = () => {
     return (
       order.map((p) => {
         return <Blog key={p.id} blog={p}
-                     likesUp={updateLikes}
-                     delBlog={delBlog} />
+          likesUp={updateLikes}
+          delBlog={delBlog} />
       })
     )
   }

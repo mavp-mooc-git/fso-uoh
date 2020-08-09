@@ -31,8 +31,8 @@ const Blog = ({ blog, likesUp, delBlog }) => {
     const uri = `http://${blog.url}`
     if(shown) {
       return (
-        <div style={{backgroundColor: '#F0FFFF'}}>
-               {blog.title} &nbsp;
+        <div style={{ backgroundColor: '#F0FFFF' }}>
+          {blog.title} &nbsp;
           <button
             type='button'
             onClick={() => setShown(false)}>
@@ -40,7 +40,7 @@ const Blog = ({ blog, likesUp, delBlog }) => {
           </button>
           <br />
           <a href={uri} rel="noopener noreferrer"
-             target='_blank'>{blog.url}</a>
+            target='_blank'>{blog.url}</a>
           <br />
           likes {blog.likes} &nbsp;
           <button
@@ -76,6 +76,6 @@ const Blog = ({ blog, likesUp, delBlog }) => {
     <div style={blogStyle}>
       {details()}
     </div>
-)}
+  )}
 
 export default Blog
