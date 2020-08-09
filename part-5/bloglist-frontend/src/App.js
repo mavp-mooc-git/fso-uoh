@@ -138,6 +138,18 @@ const App = () => {
     )
   }
 
+  const rows = () => {
+    const aux = () => blogs.filter(blog => blog.hasOwnProperty('user') &&
+                                           blog.user.name === user.name)
+    const result = () => aux().map(p => p)
+    const order = result().sort((a, b) => (a.likes > b.likes) ? -1 : 1)
+    return (
+      order.map((p) => {
+        return <Blog key={p.id} blog={p} likesUp={updateLikes} />
+      })
+    )
+  }
+
   const blogsDetails = () => {
     return (
       <div>
@@ -151,14 +163,7 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
         </Togglable>
         <div>
-          {blogs.map(blog => {
-            if(blog.hasOwnProperty('user')) {
-              if(blog.user.name === user.name ) {
-                return <Blog key={blog.id} blog={blog} likesUp={updateLikes} />
-              }
-            }
-            return false
-          } )}
+          {rows()}
         </div>
       </div>
     )
