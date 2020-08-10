@@ -62,7 +62,7 @@ const Blog = ({ blog, likesUp, delBlog }) => {
     }
     return (
       <p>
-        {blog.title} &nbsp;
+        {blog.title} - {blog.author} &nbsp;
         <button
           type='button'
           onClick={() => setShown(true)}>
@@ -73,7 +73,7 @@ const Blog = ({ blog, likesUp, delBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {details()}
     </div>
   )}
