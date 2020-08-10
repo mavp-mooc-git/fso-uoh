@@ -34,58 +34,78 @@ const blog = {
   )
 **/
 
-test('renders title of blog', () => {
-  const component = render(
-    <Blog blog={blog} />
-  )
+describe('Blog component', () => {
+  test('renders title of blog', () => {
+    const component = render(
+      <Blog blog={blog} />
+    )
 
-  //component.debug()
-  /*
-  const elem = component.container.querySelector('button')
-  console.log(prettyDOM(elem))
-  */
+    //component.debug()
+    /*
+    const elem = component.container.querySelector('button')
+    console.log(prettyDOM(elem))
+    */
 
-  expect(component.container).toHaveTextContent(
-    'Component testing is done with react-testing-library'
-  )
-})
+    expect(component.container).toHaveTextContent(
+      'Component testing is done with react-testing-library'
+    )
+  })
 
-test('renders author of blog', () => {
-  const component = render(
-    <Blog blog={blog} />
-  )
+  test('renders author of blog', () => {
+    const component = render(
+      <Blog blog={blog} />
+    )
 
-  expect(component.container).toHaveTextContent(
-    '@testing-library'
-  )
-})
+    expect(component.container).toHaveTextContent(
+      '@testing-library'
+    )
+  })
 
-test('renders url of blog', () => {
-  const mockHandler = jest.fn()
+  test('renders url of blog', () => {
+    const mockHandler = jest.fn()
 
-  const component = render(
-    <Blog blog={blog} onClick={mockHandler} />
-  )
+    const component = render(
+      <Blog blog={blog} onClick={mockHandler} />
+    )
 
-  const button = component.getByText('view')
-  fireEvent.click(button)
+    const button = component.getByText('view')
+    fireEvent.click(button)
 
-  expect(component.container).toHaveTextContent(
-    'www.blog.com/test-library.html'
-  )
-})
+    expect(component.container).toHaveTextContent(
+      'www.blog.com/test-library.html'
+    )
+  })
 
-test('renders likes of blog', () => {
-  const mockHandler = jest.fn()
+  test('renders likes of blog', () => {
+    const mockHandler = jest.fn()
 
-  const component = render(
-    <Blog blog={blog} onClick={mockHandler} />
-  )
+    const component = render(
+      <Blog blog={blog} onClick={mockHandler} />
+    )
 
-  const button = component.getByText('view')
-  fireEvent.click(button)
+    const button = component.getByText('view')
+    fireEvent.click(button)
 
-  expect(component.container).toHaveTextContent(
-    '10'
-  )
+    expect(component.container).toHaveTextContent(
+      '10'
+    )
+  })
+
+  test('like button is clicked twice', () => {
+    const mockHandler = jest.fn()
+
+    const component = render(
+      <Blog blog={blog} likesUp={mockHandler} />
+    )
+
+    const btnview = component.getByText('view')
+    fireEvent.click(btnview)
+    const btnlike = component.getByText('like')
+    fireEvent.click(btnlike)
+    fireEvent.click(btnlike)
+
+    //expect(mockHandler.mock.calls.length).toBe(2)
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
+
 })
