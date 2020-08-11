@@ -27,6 +27,7 @@ describe('Blog app', function() {
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
       cy.contains('login').click()
+      //cy.get('input[name=username]').type('mluukkai')
       cy.get('#username').type('mluukkai')
       cy.get('#password').type('salainen')
       cy.get('#login-button').click()
@@ -47,22 +48,38 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
+  describe.only('When logged in', function() {
     beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('#username').type('mluukkai')
-      cy.get('#password').type('salainen')
-      cy.get('#login-button').click()
-      cy.contains('Matti Luukkainen logged-in')
+      cy.request('POST', 'http://localhost:3003/api/login', {
+        username: 'mluukkai',
+        password: 'salainen'
+      }).then(response => {
+        localStorage
+          .setItem('loggedBlogappUser', JSON.stringify(response.body))
+        cy.visit('http://localhost:3000')
+      })
     })
 
     it('A blog can be created', function() {
       cy.contains('new blog').click()
-      cy.get('#title').type('a note created by cypress')
+      cy.get('#title').type('a blog created by cypress')
       cy.get('#author').type('cypress')
       cy.get('#url').type('www.cypress.io')
       cy.get('#create-btn').click()
-      cy.contains('a note created by cypress')
+      cy.contains('a blog created by cypress')
+    })
+
+    it('User can like a blog', function() {
+      cy.contains('new blog').click()
+      cy.get('input[name=title]').type('another blog cypress')
+      cy.get('input[name=author]').type('cypress')
+      cy.get('input[name=url]').type('www.cypress.io')
+      cy.get('#create-btn').click()
+      cy.contains('another blog cypress')
+      cy.contains('view').click()
+      cy.contains('likes 0')
+      cy.contains('like').click()
+      cy.contains('likes 1')
     })
   })
 
