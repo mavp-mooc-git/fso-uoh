@@ -3,6 +3,8 @@
 package-lock.json
 .vscode
 /cypress/integration/examples/
+/cypress/videos/
+/cypress/screenshots/
 
 # dependencies
 /node_modules

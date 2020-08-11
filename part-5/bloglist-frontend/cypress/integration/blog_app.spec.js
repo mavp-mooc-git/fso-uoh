@@ -38,6 +38,31 @@ describe('Blog app', function() {
       cy.get('#username').type('mluukkai')
       cy.get('#password').type('otherpass')
       cy.get('#login-button').click()
+      cy.get('.fail')
+        .should('contain', 'Error: Request failed with status code 401')
+        .and('have.css', 'color', 'rgb(255, 0, 0)')
+        // border-style: chromium OK, firefox-dev fail.
+        .and('have.css', 'border-style', 'solid')
+      cy.get('html').should('not.contain', 'Matti Luukkainen logged-in')
+    })
+  })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.contains('login').click()
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+      cy.contains('Matti Luukkainen logged-in')
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('#title').type('a note created by cypress')
+      cy.get('#author').type('cypress')
+      cy.get('#url').type('www.cypress.io')
+      cy.get('#create-btn').click()
+      cy.contains('a note created by cypress')
     })
   })
 
