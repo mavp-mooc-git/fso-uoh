@@ -149,6 +149,9 @@ const App = () => {
             handleLogin={handleLogin}
           />
         </Togglable>
+        <p>
+          Blog app, Full Stack Open 2020, University of Helsinki.
+        </p>
       </div>
     )
   }

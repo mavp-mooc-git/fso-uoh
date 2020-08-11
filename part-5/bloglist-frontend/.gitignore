@@ -2,6 +2,7 @@
 
 package-lock.json
 .vscode
+/cypress/integration/examples/
 
 # dependencies
 /node_modules
