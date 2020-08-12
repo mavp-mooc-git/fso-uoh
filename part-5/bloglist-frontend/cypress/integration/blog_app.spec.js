@@ -1,7 +1,7 @@
 /**
  *  Mocha recommends that arrow functions are not used.
  */
-describe('Blog app', function() {
+describe('<Blog app>', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user = {
@@ -48,7 +48,7 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/login', {
         username: 'mluukkai',
@@ -80,6 +80,20 @@ describe('Blog app', function() {
       cy.contains('likes 0')
       cy.contains('like').click()
       cy.contains('likes 1')
+    })
+
+    it('A blog can be deleted', function() {
+      const title = 'a blog created to deleted'
+      cy.contains('new blog').click()
+      cy.get('#title').type(title)
+      cy.get('#author').type('cypress')
+      cy.get('#url').type('www.cypress.io')
+      cy.get('#create-btn').click()
+      cy.contains('a blog created to deleted')
+      cy.contains('view').click()
+      cy.contains('Remove').click()
+      cy.contains(`${title} has been deleted`)
+      cy.get('html').should('not.contain', 'a blog created to deleted')
     })
   })
 
