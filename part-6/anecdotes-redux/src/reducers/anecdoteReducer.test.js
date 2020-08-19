@@ -1,11 +1,11 @@
-import reducer from './anecdoteReducer'
+import anecdoteReducer from './anecdoteReducer'
 import deepFreeze from 'deep-freeze'
 
 describe('anecdotes Reducer', () => {
   const action = {
     type: 'OTHER'
   }
-  const initialState = reducer(undefined, action)
+  const initialState = anecdoteReducer(undefined, action)
 
   // eslint-disable-next-line no-multi-str
   test('should return a proper initial state when\
@@ -15,7 +15,7 @@ describe('anecdotes Reducer', () => {
       type: 'DO_NOTHING'
     }
 
-    const newState = reducer(undefined, action)
+    const newState = anecdoteReducer(undefined, action)
     expect(newState).toEqual(initialState)
   })
 
@@ -27,7 +27,7 @@ describe('anecdotes Reducer', () => {
     
     const state = initialState
     deepFreeze(state)
-    const aux = reducer(state, action)
+    const aux = anecdoteReducer(state, action)
     const newAnecdote = aux.find(a => a.content === action.data)
     const newState = [...state, newAnecdote]
     expect(newState).toHaveLength(7)
@@ -42,14 +42,14 @@ describe('anecdotes Reducer', () => {
 
     const state = initialState
     deepFreeze(state)
-    const aux = reducer(state, action1)
+    const aux = anecdoteReducer(state, action1)
     const newAnecdote = aux.find(a => a.content === action1.data)
 
     const action2 = {
       type: 'VOTE',
       data: newAnecdote.id
     }
-    const newState = reducer(aux, action2)
+    const newState = anecdoteReducer(aux, action2)
     expect(newState).toHaveLength(7)
     expect(newState[6].votes).toEqual(1)
   })

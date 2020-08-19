@@ -1,12 +1,22 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { addVote } from '../reducers/anecdoteReducer'
+import { msgVote, deleteMessage } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(state => state.anecdotes)
 
+  const message = (id) => {
+    const data = anecdotes.find(n => n.id === id)
+    dispatch(msgVote(data.content))
+    setTimeout(() => {
+      dispatch(deleteMessage())
+    }, 5000)
+  }
+
   const vote = (id) => {
+    message(id)
     dispatch(addVote(id))
   }
 
