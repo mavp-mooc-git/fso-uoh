@@ -19,6 +19,23 @@ describe('anecdotes Reducer', () => {
     expect(newState).toEqual(initialState)
   })
 
+  test('getting initial state', () => {
+    const action = {
+      type: 'INIT_ANECDOTE',
+      data: [{
+        "content": "If it hurts, do it more often",
+        "id": "47145",
+        "votes": 0
+      }]
+    }
+
+    const state = initialState
+    deepFreeze(state)
+    const newState = anecdoteReducer(state, action)
+    expect(newState).toHaveLength(1)
+    expect(newState).toEqual(action.data)
+  })
+
   test('new anecdote is added', () => {
     const action = {
       type: 'NEW_ANECDOTE',
@@ -30,7 +47,7 @@ describe('anecdotes Reducer', () => {
     const aux = anecdoteReducer(state, action)
     const newAnecdote = aux.find(a => a.content === action.data)
     const newState = [...state, newAnecdote]
-    expect(newState).toHaveLength(7)
+    expect(newState).toHaveLength(1)
     expect(newState).toEqual(aux)
   })
 
@@ -50,8 +67,8 @@ describe('anecdotes Reducer', () => {
       data: newAnecdote.id
     }
     const newState = anecdoteReducer(aux, action2)
-    expect(newState).toHaveLength(7)
-    expect(newState[6].votes).toEqual(1)
+    expect(newState).toHaveLength(1)
+    expect(newState[0].votes).toEqual(1)
   })
 
 })
