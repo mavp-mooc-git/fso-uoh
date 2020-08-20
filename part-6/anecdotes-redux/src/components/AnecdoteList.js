@@ -8,9 +8,8 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdotes)
   const filterData = useSelector(state => state.filter)
 
-  const message = (id) => {
-    const data = anecdotes.find(n => n.id === id)
-    dispatch(msgVote(data.content))
+  const message = (content) => {
+    dispatch(msgVote(content))
     setTimeout(() => {
       dispatch(deleteMessage())
     }, 5000)
@@ -22,9 +21,9 @@ const AnecdoteList = () => {
     return e1.indexOf(e2) > -1
   })
 
-  const vote = (id) => {
-    dispatch(addVote(id))
-    message(id)
+  const vote = async (data) => {
+    dispatch(addVote(data.id))
+    message(data.content)
   }
 
   return (
@@ -38,7 +37,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes} &nbsp;
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
         )

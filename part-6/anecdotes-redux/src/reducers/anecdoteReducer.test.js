@@ -23,9 +23,9 @@ describe('anecdotes Reducer', () => {
     const action = {
       type: 'INIT_ANECDOTE',
       data: [{
-        "content": "If it hurts, do it more often",
-        "id": "47145",
-        "votes": 0
+        'content': 'If it hurts, do it more often',
+        'id': '47145',
+        'votes': 0
       }]
     }
 
@@ -39,34 +39,40 @@ describe('anecdotes Reducer', () => {
   test('new anecdote is added', () => {
     const action = {
       type: 'NEW_ANECDOTE',
-      data: 'new anecdote is added to initial state'
+      data: {
+        'content': 'new anecdote is added to initial state',
+        'id': '47145',
+        'votes': 0
+      }
     }
-    
+
     const state = initialState
     deepFreeze(state)
-    const aux = anecdoteReducer(state, action)
-    const newAnecdote = aux.find(a => a.content === action.data)
-    const newState = [...state, newAnecdote]
+    const newAnecdote = anecdoteReducer(state, action)
+    const newState = [...state, ...newAnecdote]
     expect(newState).toHaveLength(1)
-    expect(newState).toEqual(aux)
+    expect(newState[0]).toEqual(action.data)
   })
 
   test('new vote is incremented', () => {
     const action1 = {
       type: 'NEW_ANECDOTE',
-      data: 'new anecdote is added to initial state'
+      data: {
+        'content': 'new anecdote is added to initial state',
+        'id': '47145',
+        'votes': 0
+      }
     }
 
     const state = initialState
     deepFreeze(state)
-    const aux = anecdoteReducer(state, action1)
-    const newAnecdote = aux.find(a => a.content === action1.data)
+    const newAnecdote = anecdoteReducer(state, action1)
 
     const action2 = {
       type: 'VOTE',
-      data: newAnecdote.id
+      data: newAnecdote[0].id
     }
-    const newState = anecdoteReducer(aux, action2)
+    const newState = anecdoteReducer(newAnecdote, action2)
     expect(newState).toHaveLength(1)
     expect(newState[0].votes).toEqual(1)
   })
