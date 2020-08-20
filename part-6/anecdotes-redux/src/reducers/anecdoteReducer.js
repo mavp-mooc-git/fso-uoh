@@ -33,10 +33,13 @@ export const initialAnecdotes = () => {
   }
 }
 
-export const createAnecdote = (data) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    data
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newData = await anecdoteService.createNew(content)
+    dispatch({
+      type: 'NEW_ANECDOTE',
+      data: newData
+    })
   }
 }
 
