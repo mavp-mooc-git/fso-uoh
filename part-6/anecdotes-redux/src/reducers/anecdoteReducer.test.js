@@ -70,7 +70,7 @@ describe('anecdotes Reducer', () => {
 
     const action2 = {
       type: 'VOTE',
-      data: newAnecdote[0].id
+      data: newAnecdote[0]
     }
     const newState = anecdoteReducer(newAnecdote, action2)
     expect(newState).toHaveLength(1)

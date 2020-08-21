@@ -22,7 +22,7 @@ const AnecdoteList = () => {
   })
 
   const vote = async (data) => {
-    dispatch(addVote(data.id))
+    dispatch(addVote(data))
     message(data.content)
   }
 
