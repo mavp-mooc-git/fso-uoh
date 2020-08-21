@@ -4,35 +4,29 @@ const notificationReducer = (state = initmsg, action) => {
   //console.log('state:', state)
   switch (action.type) {
     case 'NEW_MSG':
-      const newmsg = `a new anecdote: "${action.data}" added`
-      return newmsg
+      return action.data
     case 'DEL_MSG':
       return initmsg
-    case 'VOTE_MSG':
-      const votemsg = `you voted: "${action.data}"`
-      return votemsg
     default:
       return state
   }
 }
 
-export const createMessage = (content) => {
-  return {
-    type: 'NEW_MSG',
-    data: content
+export const setNotification = (content, time) => {
+  return async dispatch => {
+    dispatch({
+      type: 'NEW_MSG',
+      data: content,
+      next: setTimeout(() => {
+        dispatch(clearNotification())
+      }, time * 1000)
+    })
   }
 }
 
-export const deleteMessage = () => {
+export const clearNotification = () => {
   return {
     type: 'DEL_MSG'
-  }
-}
-
-export const msgVote = (content) => {
-  return {
-    type: 'VOTE_MSG',
-    data: content
   }
 }
 

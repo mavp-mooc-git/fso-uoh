@@ -28,19 +28,7 @@ describe('notification Reducer', () => {
     const state = initialState
     deepFreeze(state)
     const newState = notificationReducer(state, action)
-    expect(newState).toEqual(`a new anecdote: "${action.data}" added`)
-  })
-
-  test('message new vote is incremented', () => {
-    const action = {
-      type: 'VOTE_MSG',
-      data: 'new anecdote is added to initial state'
-    }
-
-    const state = initialState
-    deepFreeze(state)
-    const newState = notificationReducer(state, action)
-    expect(newState).toEqual(`you voted: "${action.data}"`)
+    expect(newState).toEqual(action.data)
   })
 
 })
