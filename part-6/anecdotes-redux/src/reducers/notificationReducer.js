@@ -1,4 +1,5 @@
 const initmsg = ''
+let pause = null
 
 const notificationReducer = (state = initmsg, action) => {
   //console.log('state:', state)
@@ -14,19 +15,22 @@ const notificationReducer = (state = initmsg, action) => {
 
 export const setNotification = (content, time) => {
   return async dispatch => {
+    pause = setTimeout(() => {
+      dispatch(clearNotification())
+    }, time * 1000)
     dispatch({
       type: 'NEW_MSG',
       data: content,
-      next: setTimeout(() => {
-        dispatch(clearNotification())
-      }, time * 1000)
+      time: pause
     })
   }
 }
 
 export const clearNotification = () => {
   return {
-    type: 'DEL_MSG'
+    type: 'DEL_MSG',
+    data: '',
+    time: clearTimeout(pause)
   }
 }
 
