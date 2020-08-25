@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useField } from './hooks'
+
 import {
   Switch,
   Route,
@@ -92,21 +94,21 @@ const Footer = () => {
 
 const CreateNew = (props) => {
   const {addNew, newMessage} = props
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
   const history = useHistory()
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     history.push('/')
-    newMessage(`a new anecdote: "${content}" created!`)
+    newMessage(`a new anecdote: "${content.value}" created!`)
   }
 
   return (
@@ -115,18 +117,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content &nbsp;
-          <input name='content' value={content}
-          onChange={(e) => setContent(e.target.value)} />
+          <input name='content' {...content} />
         </div>
         <div>
           author &nbsp;
-          <input name='author' value={author}
-          onChange={(e) => setAuthor(e.target.value)} />
+          <input name='author' {...author} />
         </div>
         <div>
           url for more info &nbsp;
-          <input name='info' value={info}
-          onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' {...info} />
         </div>
         <br />
         <button>create</button>
@@ -211,4 +210,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
