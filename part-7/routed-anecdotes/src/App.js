@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useField } from './hooks'
+import useField from './hooks'
 
 import {
   Switch,
@@ -98,6 +98,7 @@ const CreateNew = (props) => {
   const content = useField('text')
   const author = useField('text')
   const info = useField('text')
+  const reset = useField('reset')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -128,7 +129,9 @@ const CreateNew = (props) => {
           <input name='info' {...info} />
         </div>
         <br />
-        <button>create</button>
+        <button type='submit'>create</button> &nbsp;
+        {/* 7.5 step: Warning: Invalid value for prop `reset` on <input> tag. */}
+        <button {...reset}>reset</button>
       </form>
       <br />
     </div>
