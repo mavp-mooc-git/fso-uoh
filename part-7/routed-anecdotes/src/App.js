@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
-import useField from './hooks'
+import About from './components/About'
+import Anecdote from './components/Anecdote'
+import AnecdoteList from './components/AnecdoteList'
+import CreateNew from './components/CreateNew'
+import Footer from './components/Footer'
+import Notification from './components/Notification'
 
 import {
   Switch,
   Route,
   Link,
-  useRouteMatch,
-  useHistory
+  useRouteMatch
 } from "react-router-dom"
 
 const Menu = () => {
@@ -18,122 +22,6 @@ const Menu = () => {
       <Link style={padding} to="/">anecdotes</Link>
       <Link style={padding} to="/create">create new</Link>
       <Link style={padding} to="/about">about</Link>
-    </div>
-  )
-}
-
-const Notification = ({ notification }) => (
-  <div>
-    <p>{notification}</p>
-  </div>
-)
-
-const AnecdoteList = ({ anecdotes }) => (
-  <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote =>
-        <li key={anecdote.id} >
-          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>
-      )}
-    </ul>
-  </div>
-)
-
-const Anecdote = ({ anecdote }) => {
-  return (
-    <div>
-      <h2>{anecdote.content}</h2>
-      <p>has {anecdote.votes} votes</p>
-      <p>for more info see: {anecdote.info}</p>
-      <p>author: {anecdote.author}</p>
-    </div>
-  )
-}
-
-const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
-
-    <em>An anecdote is a brief, revealing account of an individual person or an
-    incident. Occasionally humorous, anecdotes differ from jokes because their
-    primary purpose is not simply to provoke laughter but to reveal a truth
-    more general than the brief tale itself, such as to characterize a person
-    by delineating a specific quirk or trait, to communicate an abstract idea
-    about a person, place, or thing through the concrete details of a short
-    narrative. An anecdote is "a story with a point."</em>
-
-    <p>Software engineering is full of excellent anecdotes, at this app you can
-    find the best and add more.</p>
-  </div>
-)
-
-const Footer = () => {
-  const hline = {
-    borderTop: 1,
-    color: 'silver',
-    width: '98%'
-  }
-  return (
-    <div>
-      <hr style={hline} />
-      Anecdote app for&nbsp;
-      <a href='https://courses.helsinki.fi/fi/tkt21009'>
-        Full Stack -websovelluskehitys
-      </a>.
-      <br />
-      See&nbsp;
-      <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>
-        https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js
-      </a> for the source code.
-    </div>
-  )
-}
-
-const CreateNew = (props) => {
-  const {addNew, newMessage} = props
-  const history = useHistory()
-  const content = useField('text')
-  const author = useField('text')
-  const info = useField('text')
-  const reset = useField('reset')
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    addNew({
-      content: content.value,
-      author: author.value,
-      info: info.value,
-      votes: 0
-    })
-    history.push('/')
-    newMessage(`a new anecdote: "${content.value}" created!`)
-  }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content &nbsp;
-          <input name='content' {...content} />
-        </div>
-        <div>
-          author &nbsp;
-          <input name='author' {...author} />
-        </div>
-        <div>
-          url for more info &nbsp;
-          <input name='info' {...info} />
-        </div>
-        <br />
-        <button type='submit'>create</button> &nbsp;
-        {/* 7.5 step: Warning: Invalid value for prop `reset` on <input> tag. */}
-        <button {...reset}>reset</button>
-      </form>
-      <br />
     </div>
   )
 }
