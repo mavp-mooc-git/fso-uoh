@@ -1,0 +1,10 @@
+PUT http://localhost:3003/api/blogs/5f0d20613fbe098cbde2ac7d
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjVkYmZiNjM5MDY5YzYzMGE3NTU5MTRlZCIsImlhdCI6MTU3MzQ0MDQyOH0.mfuhvV5ttK1Mmv0MP-j6iDvBu2gVYaJH75cxQUBFKLs
+
+{
+  "title": "new Title",
+  "author": "new Author",
+  "url": "http://www.blog.com/newpost",
+  "likes": 7
+}
