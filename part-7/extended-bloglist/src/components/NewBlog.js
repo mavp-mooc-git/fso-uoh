@@ -9,7 +9,8 @@ const NewBlog = (props) => {
     event.preventDefault()
 
     props.createBlog({
-      title, author, url
+      // Blog validation failed: likes: Path `likes` is required.
+      title, author, url, likes: 0
     })
 
     setTitle('')

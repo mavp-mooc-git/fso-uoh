@@ -9,23 +9,27 @@ const getConfig = () => {
   }
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
+const getAll = async () => {
+  const request = await axios.get(baseUrl)
+  // error: request.then is not a function
+  //return request.then(response => response.data)
+  return request.data
+}
+
+const create = async (blog) => {
+  const request = await axios.post(baseUrl, blog, getConfig())
+  // error: request.then is not a function
+  //return request.then(response => response.data)
+  return request.data
+}
+
+const update = async (blog) => {
+  const request = await axios.put(`${baseUrl}/${blog.id}`, blog, getConfig())
   return request.then(response => response.data)
 }
 
-const create = (blog) => {
-  const request = axios.post(baseUrl, blog, getConfig())
-  return request.then(response => response.data)
-}
-
-const update = (blog) => {
-  const request = axios.put(`${baseUrl}/${blog.id}`, blog, getConfig())
-  return request.then(response => response.data)
-}
-
-const remove = (id) => {
-  const request = axios.delete(`${baseUrl}/${id}`, getConfig())
+const remove = async (id) => {
+  const request = await axios.delete(`${baseUrl}/${id}`, getConfig())
   return request.then(response => response.data)
 }
 
