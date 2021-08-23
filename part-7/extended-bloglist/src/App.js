@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { showNotification } from './reducers/notificationReducer'
-import { initialBlogs, newBlog } from './reducers/blogReducer'
+import { initialBlogs, newBlog, updateBlog, deleteBlog } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 
@@ -50,9 +49,10 @@ const App = () => {
   }
 
   const createBlog = async (blog) => {
+    blog.user = user
     try {
-      dispatch(newBlog(blog))
       blogFormRef.current.toggleVisibility()
+      dispatch(newBlog(blog))
       dispatch(showNotification(`a new blog '${blog.title}' by ${blog.author} added!`, 'success'))
     } catch(exception) {
       //console.log(exception)
@@ -61,18 +61,26 @@ const App = () => {
   }
 
   const handleLike = async (id) => {
-    const blogToLike = blogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    //setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, likes: blogToLike.likes + 1 } : b))
+    try {
+      const blogToLike = blogs.find(b => b.id === id)
+      const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user }
+      dispatch(updateBlog(likedBlog))
+      dispatch(showNotification(`${likedBlog.title} has been updated!`, 'success'))
+    } catch(exception) {
+      dispatch(showNotification(exception, 'error'))
+    }
   }
 
   const handleRemove = async (id) => {
-    const blogToRemove = blogs.find(b => b.id === id)
-    const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-    if (ok) {
-      await blogService.remove(id)
-      //setBlogs(blogs.filter(b => b.id !== id))
+    try {
+      const blogToRemove = blogs.find(b => b.id === id)
+      const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
+      if (ok) {
+        dispatch(deleteBlog(blogToRemove))
+        dispatch(showNotification('blog has been deleted!', 'success'))
+      }
+    } catch(exception) {
+      dispatch(showNotification(exception, 'error'))
     }
   }
 
@@ -123,7 +131,7 @@ const App = () => {
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
 
-      <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
+      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
@@ -133,7 +141,7 @@ const App = () => {
           blog={blog}
           handleLike={handleLike}
           handleRemove={handleRemove}
-          own={user.username===blog.user.username}
+          own={user.username === blog.user.username}
         />
       )}
     </div>

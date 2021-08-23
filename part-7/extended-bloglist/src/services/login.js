@@ -6,5 +6,13 @@ const login = async credentials => {
   return response.data
 }
 
-export default { login }
 
+
+/**
+ * Fix import/no-anonymous-default-export:
+ * Assign object to a variable before exporting as module default
+ * */
+//export default { login }
+
+const fns = { login }
+export default fns

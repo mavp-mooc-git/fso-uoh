@@ -11,26 +11,37 @@ const getConfig = () => {
 
 const getAll = async () => {
   const request = await axios.get(baseUrl)
-  // error: request.then is not a function
+  // Unhandled Rejection (TypeError): request.then is not a function
   //return request.then(response => response.data)
   return request.data
 }
 
 const create = async (blog) => {
   const request = await axios.post(baseUrl, blog, getConfig())
-  // error: request.then is not a function
+  // Unhandled Rejection (TypeError): request.then is not a function
   //return request.then(response => response.data)
   return request.data
 }
 
 const update = async (blog) => {
   const request = await axios.put(`${baseUrl}/${blog.id}`, blog, getConfig())
-  return request.then(response => response.data)
+  // Unhandled Rejection (TypeError): request.then is not a function
+  //return request.then(response => response.data)
+  return request.data
 }
 
 const remove = async (id) => {
   const request = await axios.delete(`${baseUrl}/${id}`, getConfig())
-  return request.then(response => response.data)
+  // Unhandled Rejection (TypeError): request.then is not a function
+  //return request.then(response => response.data)
+  return request.data
 }
 
-export default { getAll, create, update, remove }
+/**
+ * Fix import/no-anonymous-default-export:
+ * Assign object to a variable before exporting as module default
+ * */
+//export default { getAll, create, update, remove }
+
+const fns = { getAll, create, update, remove }
+export default fns

@@ -40,6 +40,7 @@
       "last 1 safari version"
     ]
   },
+  "_comment": "first of all, launch bloglist-backend part 5",
   "proxy": "http://localhost:3003",
   "devDependencies": {
     "deep-freeze": "^0.0.1",

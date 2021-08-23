@@ -9,9 +9,17 @@ const loadUser = () =>
 const logoutUser = () =>
   localStorage.removeItem(storageKey)
 
-export default {
+
+/**
+ * Fix import/no-anonymous-default-export:
+ * Assign object to a variable before exporting as module default
+ * */
+//export default { saveUser, loadUser, logoutUser }
+
+const fns = {
   saveUser,
   loadUser,
   logoutUser
 }
 
+export default fns
