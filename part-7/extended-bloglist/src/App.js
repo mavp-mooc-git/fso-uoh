@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { showNotification } from './reducers/notificationReducer'
 import { initialBlogs, newBlog, updateBlog, deleteBlog } from './reducers/blogReducer'
+import { setUser, loginUser, logoutUser } from './reducers/userReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 
-import loginService from './services/login'
-import storage from './utils/storage'
-
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,31 +18,18 @@ const App = () => {
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
   
   useEffect(() => {
+    dispatch(setUser())
     dispatch(initialBlogs())
   }, [dispatch])
 
-  useEffect(() => {
-    const user = storage.loadUser()
-    setUser(user)
-  }, [])
-
   const handleLogin = async (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      setUsername('')
-      setPassword('')
-      setUser(user)
-      dispatch(showNotification(`${user.name} welcome back!`, 'success'))
-      storage.saveUser(user)
-    } catch(exception) {
-      dispatch(showNotification('wrong username/password', 'error'))
-    }
+    dispatch(loginUser({ username, password }) )
+    setUsername('')
+    setPassword('')
   }
 
   const createBlog = async (blog) => {
@@ -55,7 +39,6 @@ const App = () => {
       dispatch(newBlog(blog))
       dispatch(showNotification(`a new blog '${blog.title}' by ${blog.author} added!`, 'success'))
     } catch(exception) {
-      //console.log(exception)
       dispatch(showNotification(exception, 'error'))
     }
   }
@@ -85,8 +68,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    storage.logoutUser()
+    dispatch(logoutUser())
   }
 
   if ( !user ) {
