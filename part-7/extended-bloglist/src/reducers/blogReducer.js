@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { showNotification } from './notificationReducer'
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -57,13 +58,18 @@ export const deleteBlog = content => {
 
 export const updateBlog = content => {
   return async dispatch => {
-    const newData = await blogService.update(content)
-    newData.id = content.id
-    newData.user = content.user
-    dispatch({
-      type: 'UPDATE_BLOG',
-      data: newData
-    })
+    try {
+      const newData = await blogService.update(content)
+      newData.id = content.id
+      newData.user = content.user
+      dispatch({
+        type: 'UPDATE_BLOG',
+        data: newData
+      })
+      dispatch(showNotification(`${content.title} has been updated!`, 'success'))
+    } catch(exception) {
+      dispatch(showNotification(`${exception.name}: ${exception.message}`, 'error'))
+    }
   }
 }
 

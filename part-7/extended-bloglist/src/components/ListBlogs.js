@@ -6,7 +6,7 @@ import NewBlog from './NewBlog'
 import Blog from './Blog'
 import { showNotification } from '../reducers/notificationReducer'
 import { logoutUser } from '../reducers/userReducer'
-import { newBlog, updateBlog, deleteBlog } from '../reducers/blogReducer'
+import { newBlog } from '../reducers/blogReducer'
 
 const ListBlogs = () => {
   const blogFormRef = React.createRef()
@@ -21,30 +21,6 @@ const ListBlogs = () => {
       blogFormRef.current.toggleVisibility()
       dispatch(newBlog(blog))
       dispatch(showNotification(`a new blog '${blog.title}' by ${blog.author} added!`, 'success'))
-    } catch(exception) {
-      dispatch(showNotification(exception, 'error'))
-    }
-  }
-
-  const handleLike = async (id) => {
-    try {
-      const blogToLike = blogs.find(b => b.id === id)
-      const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user }
-      dispatch(updateBlog(likedBlog))
-      dispatch(showNotification(`${likedBlog.title} has been updated!`, 'success'))
-    } catch(exception) {
-      dispatch(showNotification(exception, 'error'))
-    }
-  }
-
-  const handleRemove = async (id) => {
-    try {
-      const blogToRemove = blogs.find(b => b.id === id)
-      const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-      if (ok) {
-        dispatch(deleteBlog(blogToRemove))
-        dispatch(showNotification('blog has been deleted!', 'success'))
-      }
     } catch(exception) {
       dispatch(showNotification(exception, 'error'))
     }
@@ -74,9 +50,6 @@ const ListBlogs = () => {
       <Blog
         key={blog.id}
         blog={blog}
-        handleLike={handleLike}
-        handleRemove={handleRemove}
-        own={user.username === blog.user.username}
       />
     )}
   </>

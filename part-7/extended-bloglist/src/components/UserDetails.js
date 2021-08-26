@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 import { useParams } from "react-router-dom"
 
 
-const UserDet = ({users}) => {
+const UserDetails = ({users}) => {
   const id = useParams().id
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
@@ -49,5 +49,5 @@ const UserDet = ({users}) => {
   }
 }
 
-export default UserDet
+export default UserDetails
 

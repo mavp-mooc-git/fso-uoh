@@ -4,7 +4,8 @@ import { setUser } from './reducers/userReducer'
 import { getAllUsers } from './reducers/usersReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import Users from './components/Users'
-import UserDet from './components/UserDet'
+import UserDetails from './components/UserDetails'
+import BlogDetails from './components/BlogDetails'
 import Login from './components/Login'
 import { Switch, Route } from "react-router-dom"
 import ListBlogs from './components/ListBlogs'
@@ -14,6 +15,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(setUser())
@@ -27,8 +29,11 @@ const App = () => {
     return (
       <div>
         <Switch>
+          <Route path="/blogs/:id">
+            <BlogDetails blogs={blogs} />
+          </Route>
           <Route path="/users/:id">
-            <UserDet users={users} />
+            <UserDetails users={users} />
           </Route>
           <Route path="/users">
             <Users />
