@@ -4,6 +4,7 @@ import { logoutUser } from '../reducers/userReducer'
 import { getAllUsers } from '../reducers/usersReducer'
 import { useHistory } from "react-router-dom"
 import { Fragment } from 'react'
+import { Link } from "react-router-dom"
 
 
 const Users = () => {
@@ -40,7 +41,9 @@ const Users = () => {
           {users.map((u, idx) =>
             <Fragment key={idx}>
               <tr>
-                <td>{u.name}</td>
+                <td>
+                  <Link to={`/users/${u.id}`}>{u.name}</Link>
+                </td>
                 <td>{u.blogs.length}</td>
               </tr>
             </Fragment>
