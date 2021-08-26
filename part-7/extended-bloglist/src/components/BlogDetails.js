@@ -4,7 +4,6 @@ import { useHistory, useParams } from "react-router-dom"
 import Notification from './Notification'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
-import { logoutUser } from '../reducers/userReducer'
 
 const BlogDetails = ({ blogs }) => {
   const id = useParams().id
@@ -35,30 +34,14 @@ const BlogDetails = ({ blogs }) => {
     }
   }
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
-
   if (!blog) {
     return (
-      <>
-        <h2>blogs</h2>
-  
-        <p> User {user.name} logged in </p>
-        <button onClick={handleLogout}>logout</button>
-  
-        <p>data not available</p>
-      </>
+      <p>data not available</p>
     )
   } else {
     return (
       <>
-        <h2>blogs</h2>
-
         <Notification notification={notification} />
-  
-        <p> User {user.name} logged in </p>
-        <button onClick={handleLogout}>logout</button>
   
         <h2>{blog.title}</h2>
         <p>{blog.url}</p>

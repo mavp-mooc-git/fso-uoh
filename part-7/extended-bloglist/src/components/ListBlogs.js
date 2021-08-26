@@ -5,7 +5,6 @@ import Togglable from './Togglable'
 import NewBlog from './NewBlog'
 import Blog from './Blog'
 import { showNotification } from '../reducers/notificationReducer'
-import { logoutUser } from '../reducers/userReducer'
 import { newBlog } from '../reducers/blogReducer'
 
 const ListBlogs = () => {
@@ -26,33 +25,23 @@ const ListBlogs = () => {
     }
   }
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
-
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (
     <>
-    <h2>blogs</h2>
+      <Notification notification={notification} />
 
-    <Notification notification={notification} />
+      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+        <NewBlog createBlog={createBlog} />
+      </Togglable>
 
-    <p>
-      {user.name} logged in <button onClick={handleLogout}>logout</button>
-    </p>
-
-    <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-      <NewBlog createBlog={createBlog} />
-    </Togglable>
-
-    {blogs.sort(byLikes).map(blog =>
-      <Blog
-        key={blog.id}
-        blog={blog}
-      />
-    )}
-  </>
+      {blogs.sort(byLikes).map(blog =>
+        <Blog
+          key={blog.id}
+          blog={blog}
+        />
+      )}
+    </>
   )
 }
 
