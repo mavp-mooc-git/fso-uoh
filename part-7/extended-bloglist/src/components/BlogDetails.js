@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from "react-router-dom"
 import Notification from './Notification'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
+import { initialComments, getComments } from '../reducers/commentReducer'
 
 const BlogDetails = ({ blogs }) => {
   const id = useParams().id
@@ -11,8 +12,14 @@ const BlogDetails = ({ blogs }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const notification = useSelector(state => state.notification)
+  const comments = useSelector(state => state.comments)
   const user = useSelector(state => state.user)
   const own = user.username === blog.user.username
+
+  useEffect(() => {
+    dispatch(initialComments(blogs))
+    dispatch(getComments())
+  }, [dispatch, blogs])
 
   const handleLike = async (id) => {
       const blogToLike = blogs.find(b => b.id === id)
@@ -50,6 +57,19 @@ const BlogDetails = ({ blogs }) => {
         </p>
         <p>added by {blog.user.name}</p>
         <p>{own&&<button onClick={() => handleRemove(blog.id)}>remove</button>}</p>
+
+        <h3>comments:</h3>
+        <ul>
+          {comments.map((c, ix) => {
+            let res = ''
+            const d = c.desc
+            if(c.id === id) {
+              (d.length > 1) ? res = d.map((a, iy) => <li key={iy}>{a}</li>)
+                             : res = <li key={ix}>{c.desc}</li>
+            }
+            return res
+          } )}
+        </ul>
       </>
     )
   }
