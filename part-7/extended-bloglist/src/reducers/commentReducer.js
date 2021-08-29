@@ -12,6 +12,8 @@ const commentReducer = (state = [], action) => {
   switch (action.type) {
     case 'GET_COMMENTS':
       return action.data
+    case 'ADD_COMMENT':
+      return [...state, action.data]
     default:
       return state
   }
@@ -63,6 +65,45 @@ export const getComments = () => {
     dispatch({
       type: 'GET_COMMENTS',
       data: data
+    })
+  }
+}
+
+export const createComment = (blog, content) => {
+  return async dispatch => {
+    const data = storage.loadComments()
+    let cmmt = data.find(d => d.id === blog.id )
+    if(cmmt) {
+      cmmt.desc.push(content)
+      storage.saveComments(data)
+      dispatch({
+        type: 'GET_COMMENTS',
+        data
+      })
+    } else {
+      let add = {
+        'id': blog.id,
+        'desc': [content],
+        'title': blog.title
+      }
+      storage.saveComments([...data, add])
+      dispatch({
+        type: 'ADD_COMMENT',
+        data: add
+      })
+    }
+  }
+}
+
+export const deleteComment = (id) => {
+  let data = storage.loadComments()
+  const result = data.filter(c => c.id !== id).map(c => c)
+  storage.initComments(result)
+  const datastore = storage.loadComments()
+  return dispatch => {
+    dispatch({
+      type: 'GET_COMMENTS',
+      data: datastore
     })
   }
 }

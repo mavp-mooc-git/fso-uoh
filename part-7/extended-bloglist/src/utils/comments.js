@@ -6,9 +6,13 @@ const initComments = (data) =>
 const loadComments = () =>
   JSON.parse(localStorage.getItem(storageKey))
 
+const saveComments = (data) =>
+  localStorage.setItem(storageKey, JSON.stringify(data))
+
 const fns = {
   initComments,
-  loadComments
+  loadComments,
+  saveComments
 }
 
 export default fns

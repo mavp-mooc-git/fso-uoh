@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, useParams } from "react-router-dom"
 import Notification from './Notification'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
-import { initialComments, getComments } from '../reducers/commentReducer'
+import { initialComments, getComments,
+         createComment, deleteComment } from '../reducers/commentReducer'
 
 const BlogDetails = ({ blogs }) => {
   const id = useParams().id
@@ -15,11 +16,19 @@ const BlogDetails = ({ blogs }) => {
   const comments = useSelector(state => state.comments)
   const user = useSelector(state => state.user)
   const own = user.username === blog.user.username
+  const [review, setReview] = useState('')
 
   useEffect(() => {
     dispatch(initialComments(blogs))
     dispatch(getComments())
   }, [dispatch, blogs])
+
+  const handleNewComment = (event) => {
+    event.preventDefault()
+    dispatch(createComment(blog, review))
+    dispatch(showNotification(`new comment '${review}' created!`, 'success'))
+    setReview('')
+  }
 
   const handleLike = async (id) => {
       const blogToLike = blogs.find(b => b.id === id)
@@ -30,10 +39,11 @@ const BlogDetails = ({ blogs }) => {
   const handleRemove = async (id) => {
     try {
       const blogToRemove = blogs.find(b => b.id === id)
-      const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
+      const ok = window.confirm(`Remove blog '${blogToRemove.title}' by ${blogToRemove.author}`)
       if (ok) {
         dispatch(deleteBlog(blogToRemove))
         dispatch(showNotification('blog has been deleted!', 'success'))
+        dispatch(deleteComment(blogToRemove.id))
         history.push('/')
       }
     } catch(exception) {
@@ -59,6 +69,13 @@ const BlogDetails = ({ blogs }) => {
         <p>{own&&<button onClick={() => handleRemove(blog.id)}>remove</button>}</p>
 
         <h3>comments:</h3>
+        <form onSubmit={handleNewComment}>
+          <div>
+            <input name='review' value={review}
+                   onChange={({ target }) => setReview(target.value)} />
+            <button id="add">add comment</button>
+          </div>
+        </form>
         <ul>
           {comments.map((c, ix) => {
             let res = ''
