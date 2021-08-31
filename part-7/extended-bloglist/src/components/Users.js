@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getAllUsers } from '../reducers/usersReducer'
 import { Fragment } from 'react'
 import { Link } from "react-router-dom"
+import { Table } from 'react-bootstrap'
 
 
 const Users = () => {
@@ -16,7 +17,7 @@ const Users = () => {
   return (
     <>
       <h2>Users</h2>
-      <table>
+      <Table striped>
         <thead>
           <tr>
             <th> </th>
@@ -35,7 +36,7 @@ const Users = () => {
             </Fragment>
           )}
         </tbody>
-      </table>
+      </Table>
     </>
   )
 }

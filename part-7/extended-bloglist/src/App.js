@@ -9,6 +9,7 @@ import BlogDetails from './components/BlogDetails'
 import Login from './components/Login'
 import { Link, Switch, Route, useHistory } from "react-router-dom"
 import ListBlogs from './components/ListBlogs'
+import { Button, Nav, Navbar } from 'react-bootstrap'
 
 
 const App = () => {
@@ -34,17 +35,35 @@ const App = () => {
   }
 
   if ( !user || !users ) {
-    return <Login />
+    return (
+      <div className="container">
+        <Login />
+      </div>
+    )
   } else {
     return (
-      <>
-        <div>
-          <Link style={padding} to="/">blogs</Link>
-          <Link style={padding} to="/users">users</Link>
-          { user ? <strong>{user.name} logged in</strong>
-                 : <Link style={padding} to="/">login</Link> }
-          <button onClick={handleLogout}>logout</button>
-        </div>
+      <div className="container">
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/">blogs</Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/users">users</Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                { user ? <strong>{user.name} logged in</strong>
+                      : <Link style={padding} to="/">login</Link> }
+              </Nav.Link>
+              <Button variant="primary" onClick={handleLogout}>
+                logout
+              </Button>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
         <h2>blog app</h2>
         <Switch>
           <Route path="/blogs/:id">
@@ -60,7 +79,7 @@ const App = () => {
             <ListBlogs />
           </Route>
         </Switch>
-      </>
+      </div>
     )
   }
 }

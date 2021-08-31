@@ -1,4 +1,6 @@
 import React from 'react'
+import { Alert } from 'react-bootstrap'
+
 
 const Notification = ({ notification }) => {
   if ( !notification ) {
@@ -14,7 +16,9 @@ const Notification = ({ notification }) => {
   }
 
   return <div style={style}>
-    {notification.data}
+    <Alert>
+      {notification.data}
+    </Alert>
   </div>
 }
 

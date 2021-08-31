@@ -6,6 +6,8 @@ import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
 import { initialComments, getComments,
          createComment, deleteComment } from '../reducers/commentReducer'
+import { Table, Form, Button } from 'react-bootstrap'
+
 
 const BlogDetails = ({ blogs }) => {
   const id = useParams().id
@@ -62,20 +64,39 @@ const BlogDetails = ({ blogs }) => {
   
         <h2>{blog.title}</h2>
         <p>{blog.url}</p>
-        <p>{blog.likes} likes
-          <button onClick={() => handleLike(blog.id)}>like</button>
-        </p>
+        <Table striped>
+          <tbody>
+            <tr>
+              <td>
+                {blog.likes} likes
+              </td>
+              <td>
+                <Button variant="secondary" onClick={() => handleLike(blog.id)}>
+                  like
+                </Button>
+              </td>
+            </tr>
+          </tbody>
+        </Table>
         <p>added by {blog.user.name}</p>
-        <p>{own&&<button onClick={() => handleRemove(blog.id)}>remove</button>}</p>
+        {own&&<Button variant="secondary" onClick={() => handleRemove(blog.id)}>
+          remove
+        </Button>}
 
         <h3>comments:</h3>
-        <form onSubmit={handleNewComment}>
-          <div>
-            <input name='review' value={review}
-                   onChange={({ target }) => setReview(target.value)} />
-            <button id="add">add comment</button>
-          </div>
-        </form>
+        <Form onSubmit={handleNewComment}>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              name='review'
+              value={review}
+              onChange={({ target }) => setReview(target.value)}
+            />
+            <Button variant="primary" id="add" type="submit">
+              add comment
+            </Button>
+          </Form.Group>
+        </Form>
         <ul>
           {comments.map((c, ix) => {
             let res = ''
