@@ -9,8 +9,8 @@ import BlogDetails from './components/BlogDetails'
 import Login from './components/Login'
 import { Link, Switch, Route, useHistory } from "react-router-dom"
 import ListBlogs from './components/ListBlogs'
-import { Button, Nav, Navbar } from 'react-bootstrap'
-
+import { Button, Form, Nav, Navbar } from 'react-bootstrap'
+import storeTheme from './utils/theme'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -29,6 +29,17 @@ const App = () => {
     padding: 5
   }
 
+  const loadTheme = () => {
+    storeTheme.applyTheme()
+  }
+
+  const handleTheme = (e) => {
+    const theme = {
+      'name': e.target.value
+    }
+    storeTheme.saveTheme(theme)
+  }
+
   const handleLogout = () => {
     dispatch(logoutUser())
     history.push('/')
@@ -42,7 +53,7 @@ const App = () => {
     )
   } else {
     return (
-      <div className="container">
+      <div className="container" onLoad={loadTheme()}>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
@@ -54,12 +65,22 @@ const App = () => {
                 <Link style={padding} to="/users">users</Link>
               </Nav.Link>
               <Nav.Link href="#" as="span">
+                <Form.Label htmlFor='themes'>Theme : &nbsp;</Form.Label>
+                <select id="themes" onChange={handleTheme}>
+                  <option value="">Select ...</option>
+                  <option value="bootstrap">React Bootstrap</option>
+                  <option value="styled">Styled components</option>
+                </select>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
                 { user ? <strong>{user.name} logged in</strong>
                       : <Link style={padding} to="/">login</Link> }
               </Nav.Link>
-              <Button variant="primary" onClick={handleLogout}>
-                logout
-              </Button>
+              <Nav.Link href="#" as="span">
+                <Button variant="primary" onClick={handleLogout}>
+                  logout
+                </Button>
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

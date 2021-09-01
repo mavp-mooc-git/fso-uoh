@@ -6,7 +6,9 @@ import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
 import { initialComments, getComments,
          createComment, deleteComment } from '../reducers/commentReducer'
-import { Table, Form, Button } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
+import { ScInput, ScButton} from  '../utils/styledComponents'
+import storeTheme from '../utils/theme'
 
 
 const BlogDetails = ({ blogs }) => {
@@ -19,6 +21,7 @@ const BlogDetails = ({ blogs }) => {
   const user = useSelector(state => state.user)
   const own = user.username === blog.user.username
   const [review, setReview] = useState('')
+  const theme = storeTheme.loadTheme()
 
   useEffect(() => {
     dispatch(initialComments(blogs))
@@ -59,56 +62,84 @@ const BlogDetails = ({ blogs }) => {
     )
   } else {
     return (
-      <>
+      <div className={(theme.name === 'styled') ? "" : "container"}>
         <Notification notification={notification} />
-  
+
         <h2>{blog.title}</h2>
         <p>{blog.url}</p>
-        <Table striped>
+        <table className={(theme.name === 'styled') ? "" : "table striped"}>
           <tbody>
             <tr>
               <td>
                 {blog.likes} likes
               </td>
               <td>
-                <Button variant="secondary" onClick={() => handleLike(blog.id)}>
-                  like
-                </Button>
+              {(theme.name === 'styled') ?
+              <ScButton onClick={() => handleLike(blog.id)}>
+                like
+              </ScButton> :
+              <Button variant="secondary"
+                onClick={() => handleLike(blog.id)}>
+                like
+              </Button>}
               </td>
             </tr>
           </tbody>
-        </Table>
+        </table>
         <p>added by {blog.user.name}</p>
-        {own&&<Button variant="secondary" onClick={() => handleRemove(blog.id)}>
-          remove
-        </Button>}
+
+        {own && (
+            (theme.name === 'styled') ?
+            <ScButton onClick={() => handleRemove(blog.id)}>
+              remove
+            </ScButton> :
+            <Button variant="secondary"
+              onClick={() => handleRemove(blog.id)}>
+              remove
+            </Button>
+          )
+        }
 
         <h3>comments:</h3>
-        <Form onSubmit={handleNewComment}>
-          <Form.Group>
+        <form className={(theme.name === 'styled') ? "" : "form"}
+          onSubmit={handleNewComment}>
+          <div className={(theme.name === 'styled') ? "" : "form group"}>
+            {(theme.name === 'styled') ?
+            <ScInput
+              type="text"
+              name='review'
+              value={review}
+              placeholder="write a new comment"
+              onChange={({ target }) => setReview(target.value)}
+            /> :
             <Form.Control
               type="text"
               name='review'
               value={review}
+              placeholder="write a new comment"
               onChange={({ target }) => setReview(target.value)}
-            />
+            />}
+            {(theme.name === 'styled') ?
+            <ScButton id="add" type="submit">
+              add comment
+            </ScButton> :
             <Button variant="primary" id="add" type="submit">
               add comment
-            </Button>
-          </Form.Group>
-        </Form>
+            </Button>}
+          </div>
+        </form>
         <ul>
           {comments.map((c, ix) => {
             let res = ''
             const d = c.desc
             if(c.id === id) {
               (d.length > 1) ? res = d.map((a, iy) => <li key={iy}>{a}</li>)
-                             : res = <li key={ix}>{c.desc}</li>
+                              : res = <li key={ix}>{c.desc}</li>
             }
             return res
           } )}
         </ul>
-      </>
+      </div>
     )
   }
 }

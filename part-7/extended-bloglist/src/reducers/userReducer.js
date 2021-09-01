@@ -1,6 +1,7 @@
 import loginService from '../services/login'
 import { showNotification } from './notificationReducer'
 import storage from '../utils/storage'
+import storeTheme from '../utils/theme'
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
@@ -25,6 +26,10 @@ export const setUser = () => {
   }
 }
 
+const loadTheme = () => {
+  storeTheme.applyTheme()
+}
+
 export const loginUser = credentials => {
   return async dispatch => {
     try {
@@ -35,6 +40,7 @@ export const loginUser = credentials => {
       })
       dispatch(showNotification(`${content.name} welcome back!`, 'success'))
       storage.saveUser(content)
+      loadTheme()
     } catch(exception) {
       dispatch(showNotification('wrong username/password', 'error'))
     }
