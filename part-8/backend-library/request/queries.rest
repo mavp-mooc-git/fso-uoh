@@ -2,7 +2,7 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-  "query": "query { bookCount, authorCount }"
+  "query": "query { bookCount authorCount }"
 }
 
 #####
@@ -11,7 +11,7 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-  "query": "query { allBooks { title, author, published, genres } }"
+  "query": "query { allBooks { title author published genres } }"
 }
 
 #####
@@ -20,7 +20,7 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-  "query": "query { allAuthors { name, bookCount } }"
+  "query": "query { allAuthors { name bookCount } }"
 }
 
 #####
@@ -30,5 +30,23 @@ Content-Type: application/json
 
 {
   "query": "query { allBooks(author: \"Robert Martin\") { title } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allBooks(genre: \"refactoring\") { title author } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allBooks(author: \"Robert Martin\", genre: \"refactoring\") { title author } }"
 }
 
