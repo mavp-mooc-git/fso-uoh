@@ -50,3 +50,30 @@ Content-Type: application/json
   "query": "query { allBooks(author: \"Robert Martin\", genre: \"refactoring\") { title author } }"
 }
 
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { addBook(title: \"NoSQL Distilled\", author: \"Martin Fowler\", published: 2012, genres: [\"database\", \"nosql\"]) { title author } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { addBook(title: \"Pimeyden tango\", author: \"Reijo Mäki\", published: 1997, genres: [\"crime\"]) { title author } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allAuthors { name born bookCount } }"
+}
+
