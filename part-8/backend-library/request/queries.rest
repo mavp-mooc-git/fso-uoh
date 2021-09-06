@@ -77,3 +77,12 @@ Content-Type: application/json
   "query": "query { allAuthors { name born bookCount } }"
 }
 
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { editAuthor(name: \"Reijo Mäki\", setBornTo: 1958) { name born } }"
+}
+
