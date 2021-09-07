@@ -3,8 +3,8 @@ import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, ALL_BOOKS, EDIT_AUTHOR } from '../queries'
 
 const Authors = ({show, data, setError }) => {
-  const [name, setName] = useState('')
   const [born, setBorn] = useState('')
+  const [selected, setSelected] = useState('select')
   const [ editAuthor, result ] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
     onError: (error) => {
@@ -12,12 +12,15 @@ const Authors = ({show, data, setError }) => {
     }
   })
 
+  const selectStyle = {
+    width: '90%',
+    height: 30,
+    fontSize: 16
+  }
+
   const submit = async (event) => {
     event.preventDefault()
-    
-    editAuthor({ variables: { name, born } })
-
-    setName('')
+    editAuthor({ variables: { name: selected, born } })
     setBorn('')
   }
 
@@ -59,11 +62,11 @@ const Authors = ({show, data, setError }) => {
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+        <select value={selected} style={selectStyle}
+                onChange={({ target }) => setSelected(target.value)}>
+          <option value="select">Select author ...</option>
+          {authors.map((a, i) => <option key={i} value={a.name}>{a.name}</option>)}
+        </select>
         </div>
         <div>
           born
