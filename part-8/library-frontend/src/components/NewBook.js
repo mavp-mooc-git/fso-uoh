@@ -2,22 +2,29 @@ import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
 
-const NewBook = (props) => {
+const NewBook = ({show, setError}) => {
   const [title, setTitle] = useState('')
   const [author, setAuhtor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ]
+    refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message)
+    }
   })
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
   const submit = async (event) => {
     event.preventDefault()
+    if (genres.length === 0) {
+      setError("error: 'genres' is required")
+      return null
+    }
     
     createBook({ variables: { title, published, author, genres } })
 
@@ -41,6 +48,7 @@ const NewBook = (props) => {
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            required
           />
         </div>
         <div>
@@ -48,6 +56,7 @@ const NewBook = (props) => {
           <input
             value={author}
             onChange={({ target }) => setAuhtor(target.value)}
+            required
           />
         </div>
         <div>
@@ -56,6 +65,7 @@ const NewBook = (props) => {
             type='number'
             value={published}
             onChange={({ target }) => setPublished(Number(target.value))}
+            required
           />
         </div>
         <div>
