@@ -1,0 +1,27 @@
+{
+  "name": "apollo-server",
+  "version": "1.0.0",
+  "description": "Backend library GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend",
+    "library",
+    "graphQL"
+  ],
+  "author": "Manuel Vargas P.",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.3.0",
+    "dotenv": "^10.0.0",
+    "graphql": "^15.5.2",
+    "mongoose": "^5.13.9",
+    "mongoose-unique-validator": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
