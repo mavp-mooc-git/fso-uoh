@@ -20,5 +20,24 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
+  "query": "query { allBooks(genre: \"refactoring\") { title published } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allAuthors { name bookCount } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
   "query": "query { allAuthors { name born } }"
 }
+

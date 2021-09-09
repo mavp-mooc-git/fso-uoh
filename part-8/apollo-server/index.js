@@ -40,22 +40,32 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks: [Book!]!
+    allBooks(genre: String): [Book!]!
     allAuthors: [Author!]!
   }
 `
 
 const resolvers = {
   Query: {
-    bookCount: () => Book.collection.countDocuments(),
-    authorCount: () => Author.collection.countDocuments(),
-    allBooks: () => {
+    bookCount: async () => await Book.collection.countDocuments(),
+    authorCount: async () => await Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
       // filters missing
-      return Book.find({})
+      const books = await Book.find({})
+      if(!args.genre ) return books
+      if( args.genre ) return books.filter(b => {
+        return (b.genres.find(g => g === args.genre))
+      })
     },
-    allAuthors: () => {
+    allAuthors: async () => {
       // filters missing
-      return Author.find({})
+      return await Author.find({})
+    }
+  },
+  Author: {
+    bookCount: async (root) => {
+      const books = await Book.find({})
+      return books.filter(b => b.author === root._id.toString()).length
     }
   }
 }
