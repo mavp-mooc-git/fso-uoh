@@ -11,16 +11,7 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-  "query": "query { allBooks { title published genres } }"
-}
-
-#####
-
-POST http://localhost:4000/
-Content-Type: application/json
-
-{
-  "query": "query { allBooks(genre: \"refactoring\") { title published } }"
+  "query": "query { allBooks { title author{name} published genres } }"
 }
 
 #####
@@ -38,6 +29,69 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-  "query": "query { allAuthors { name born } }"
+  "query": "query { allBooks(author: \"Robert Martin\") { title } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allBooks(genre: \"refactoring\") { title author{name} } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allBooks(author: \"Robert Martin\", genre: \"refactoring\") { title author{name} } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { addBook(title: \"Clean Code\", author: \"Robert Martin\", published: 2008, genres: [\"refactoring\"]) { title author{name} } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { addBook(title: \"NoSQL Distilled\", author: \"Martin Fowler\", published: 2012, genres: [\"database\", \"nosql\"]) { title author{name} } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { addBook(title: \"Pimeyden tango\", author: \"Reijo Mäki\", published: 1997, genres: [\"crime\"]) { title author{name} } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "query { allAuthors { name born bookCount } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { editAuthor(name: \"Reijo Mäki\", setBornTo: 1958) { name born } }"
 }
 
