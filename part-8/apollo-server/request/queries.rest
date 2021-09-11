@@ -54,6 +54,7 @@ Content-Type: application/json
 
 POST http://localhost:4000/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MTNkMTIxZDljY2QyNTQ4NjllY2UwYjkiLCJpYXQiOjE2MzEzOTk4OTh9.IFNu-kbLPrai14vJcr8B4g0yyKqJwfEKOIHMlk8tZdY
 
 {
   "query": "mutation { addBook(title: \"Clean Code\", author: \"Robert Martin\", published: 2008, genres: [\"refactoring\"]) { title author{name} } }"
@@ -63,6 +64,7 @@ Content-Type: application/json
 
 POST http://localhost:4000/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MTNkMTIxZDljY2QyNTQ4NjllY2UwYjkiLCJpYXQiOjE2MzEzOTk4OTh9.IFNu-kbLPrai14vJcr8B4g0yyKqJwfEKOIHMlk8tZdY
 
 {
   "query": "mutation { addBook(title: \"NoSQL Distilled\", author: \"Martin Fowler\", published: 2012, genres: [\"database\", \"nosql\"]) { title author{name} } }"
@@ -72,6 +74,7 @@ Content-Type: application/json
 
 POST http://localhost:4000/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MTNkMTIxZDljY2QyNTQ4NjllY2UwYjkiLCJpYXQiOjE2MzEzOTk4OTh9.IFNu-kbLPrai14vJcr8B4g0yyKqJwfEKOIHMlk8tZdY
 
 {
   "query": "mutation { addBook(title: \"Pimeyden tango\", author: \"Reijo Mäki\", published: 1997, genres: [\"crime\"]) { title author{name} } }"
@@ -90,8 +93,46 @@ Content-Type: application/json
 
 POST http://localhost:4000/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MTNkMTIxZDljY2QyNTQ4NjllY2UwYjkiLCJpYXQiOjE2MzE0MDA0NDh9.3Tj7hJRYZn0UqBXC4UDtJ_KAUmrnFUmSyXfimLkJN9M
 
 {
-  "query": "mutation { editAuthor(name: \"Reijo Mäki\", setBornTo: 1958) { name born } }"
+  "query": "mutation { editAuthor(name: \"Reijo Mäki\", setBornTo: 1950) { name born } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { createUser(username: \"mluukkai\", favoriteGenre: \"refactoring\") { username favoriteGenre } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { createUser(username: \"root\", favoriteGenre: \"patterns\") { username favoriteGenre } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+  "query": "mutation { login(username: \"mluukkai\", password: \"sekret\") { value } }"
+}
+
+#####
+
+POST http://localhost:4000/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2MTNkMTIxZDljY2QyNTQ4NjllY2UwYjkiLCJpYXQiOjE2MzE0MDA0NDh9.3Tj7hJRYZn0UqBXC4UDtJ_KAUmrnFUmSyXfimLkJN9M
+
+{
+  "query": "query { me { id username } }"
 }
 

@@ -4,6 +4,7 @@
   "description": "Backend library GraphQL",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +19,7 @@
     "apollo-server": "^3.3.0",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.9",
     "mongoose-unique-validator": "^2.0.3"
   },
