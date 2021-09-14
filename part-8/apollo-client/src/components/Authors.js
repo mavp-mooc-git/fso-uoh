@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, ALL_BOOKS, EDIT_AUTHOR } from '../queries'
 
-const Authors = ({show, data, setError }) => {
+const Authors = ({show, data, setError}) => {
   const [born, setBorn] = useState('')
   const [selected, setSelected] = useState('select')
   const [ editAuthor, result ] = useMutation(EDIT_AUTHOR, {
@@ -33,7 +33,16 @@ const Authors = ({show, data, setError }) => {
   if (!show) {
     return null
   }
+  
   const authors = data
+
+  if (!authors) {
+    return (
+      <>
+        <h2>authors</h2> <p>no data available</p>
+      </>
+    )
+  }
 
   return (
     <div>
@@ -59,24 +68,27 @@ const Authors = ({show, data, setError }) => {
         </tbody>
       </table>
 
-      <h2>Set birthyear</h2>
-      <form onSubmit={submit}>
-        <div>
-        <select value={selected} style={selectStyle}
-                onChange={({ target }) => setSelected(target.value)}>
-          <option value="select">Select author ...</option>
-          {authors.map((a, i) => <option key={i} value={a.name}>{a.name}</option>)}
-        </select>
-        </div>
-        <div>
-          born
-          <input
-            value={born}
-            onChange={({ target }) => setBorn(Number(target.value))}
-          />
-        </div>
-        <button type='submit'>update author</button>
-      </form>
+      { (authors[0].name === 'no data available') ? null :
+      <>
+        <h2>Set birthyear</h2>
+        <form onSubmit={submit}>
+          <div>
+          <select value={selected} style={selectStyle}
+                  onChange={({ target }) => setSelected(target.value)}>
+            <option value="select">Select author ...</option>
+            {authors.map((a, i) => <option key={i} value={a.name}>{a.name}</option>)}
+          </select>
+          </div>
+          <div>
+            born
+            <input
+              value={born}
+              onChange={({ target }) => setBorn(Number(target.value))}
+            />
+          </div>
+          <button type='submit'>update author</button>
+        </form>
+      </> }
 
     </div>
   )

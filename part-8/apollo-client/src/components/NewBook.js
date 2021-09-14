@@ -2,16 +2,30 @@ import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
 
-const NewBook = ({show, setError}) => {
+const NewBook = ({show, setError, setPage}) => {
   const [title, setTitle] = useState('')
   const [author, setAuhtor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
+    refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
+    },
+    update: (store, response) => {
+      try {
+        const booksInStore = store.readQuery({ query: ALL_BOOKS })
+        store.writeQuery({
+          query: ALL_BOOKS,
+          data: {
+            ...booksInStore,
+            allBooks: [ ...booksInStore.allBooks, response.data.addBook ]
+          }
+        })
+      } catch (error) {
+        setError("error: in cache update method", error)
+      }
     }
   })
 
@@ -26,13 +40,14 @@ const NewBook = ({show, setError}) => {
       return null
     }
     
-    createBook({ variables: { title, published, author, genres } })
+    await createBook({ variables: { title, published, author, genres } })
 
     setTitle('')
     setPublished('')
     setAuhtor('')
     setGenres([])
     setGenre('')
+    setPage('books')
   }
 
   const addGenre = () => {

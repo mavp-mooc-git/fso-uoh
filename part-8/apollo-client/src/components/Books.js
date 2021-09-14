@@ -7,6 +7,14 @@ const Books = ({show, data}) => {
 
   const books = data
 
+  if (!books) {
+    return (
+      <>
+        <h2>books</h2> <p>no data available</p>
+      </>
+    )
+  }
+
   return (
     <div>
       <h2>books</h2>
