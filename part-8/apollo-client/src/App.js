@@ -31,6 +31,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+  const [genre, setGenre] = useState([])
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
   const client = useApolloClient()
@@ -46,6 +47,7 @@ const App = () => {
 
   const logout = () => {
     setToken(null)
+    setGenre([])
     localStorage.clear()
     client.resetStore()
     setPage('authors')
@@ -91,7 +93,8 @@ const App = () => {
       />
 
       <Books
-        show={page === 'books'}
+        show={page === 'books'} token={token}
+        genre={genre} setGenre={setGenre}
         data={(!books.data) ? null : books.data.allBooks}
       />
 
