@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
-import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
+import NewBook from './components/NewBook'
+import Recommend from './components/Recommend'
 import { useQuery, useApolloClient } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import { ALL_AUTHORS, ALL_BOOKS, GET_ME } from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -34,6 +35,7 @@ const App = () => {
   const [genre, setGenre] = useState([])
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
+  const currUser = useQuery(GET_ME)
   const client = useApolloClient()
 
   if (!token) {
@@ -60,6 +62,12 @@ const App = () => {
     }, 5000)
   }
 
+  const list = (!books.data) ? null : books.data.allBooks
+  let filter = (genre) ? list.filter(b => {
+    return (b.genres.find(g => g === genre))
+  }) : null
+
+
   return (
     <div>
       <div>
@@ -72,6 +80,7 @@ const App = () => {
       :
         <>
           <button onClick={() => setPage('add')}>add book</button>
+          <button onClick={() => setPage('recommend')}>recommend</button>
           <button onClick={logout}>logout</button>
         </>
       }
@@ -94,7 +103,7 @@ const App = () => {
 
       <Books
         show={page === 'books'} token={token}
-        genre={genre} setGenre={setGenre}
+        genre={genre} setGenre={setGenre} filter={filter}
         data={(!books.data) ? null : books.data.allBooks}
       />
 
@@ -102,6 +111,11 @@ const App = () => {
         show={page === 'add'}
         setError={notify}
         setPage={setPage}
+      />
+
+      <Recommend
+        show={page === 'recommend'} currUser={currUser}
+        data={(!books.data) ? null : books.data.allBooks}
       />
 
     </div>

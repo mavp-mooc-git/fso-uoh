@@ -1,17 +1,12 @@
 import React from 'react'
 
-const Books = ({show, data, token, genre, setGenre}) => {
+const Books = ({show, data, token, genre, setGenre, filter}) => {
 
   if (!show) {
     return null
   }
 
   const books = data
-
-  let filter = (genre) ? books.filter(b => {
-    return (b.genres.find(g => g === genre))
-  }) : null
-
   const listbooks = (filter.length < 1) ? books : filter
 
   if (!books) {
