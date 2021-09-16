@@ -1,13 +1,13 @@
 import React from 'react'
 
-const Books = ({show, data, token, genre, setGenre, filter}) => {
+const Books = ({show, data, token, genreBooks, setGenreBooks, filterBooks}) => {
 
   if (!show) {
     return null
   }
 
   const books = data
-  const listbooks = (filter.length < 1) ? books : filter
+  const listbooks = (filterBooks.length < 1) ? books : filterBooks
 
   if (!books) {
     return (
@@ -35,10 +35,10 @@ const Books = ({show, data, token, genre, setGenre, filter}) => {
   return (
     <div>
       <h2>books</h2>
-      {(genre.length > 0) ?
-      <p>in genre: <strong>{genre}</strong> &nbsp;
+      {(genreBooks.length > 0) ?
+      <p>in genre: <strong>{genreBooks}</strong> &nbsp;
         <button key="clear" style={btnStyle}
-                onClick={() => setGenre([])}>
+                onClick={() => setGenreBooks([])}>
           <strong>clear filters</strong>
         </button>
       </p> : null}
@@ -68,7 +68,7 @@ const Books = ({show, data, token, genre, setGenre, filter}) => {
           {genres.map((g, i) => {
             return (
               <button key={i} style={btnStyle} value={g}
-                      onClick={({ target }) => setGenre(target.value)}>{g}
+                      onClick={({ target }) => setGenreBooks(target.value)}>{g}
               </button>
             )
           } )}

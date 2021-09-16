@@ -1,18 +1,12 @@
 import React from 'react'
 
-const Recommend = ({show, data, currUser}) => {
+const Recommend = ({show, data, genreUser}) => {
 
   if (!show) {
     return null
   }
 
   const books = data
-
-  let genre = (currUser) ? currUser.data.me.favoriteGenre : null
-
-  let listbooks = (currUser) ? books.filter(b => {
-    return (b.genres.find(g => g === genre))
-  }) : null
 
   if (!books) {
     return (
@@ -25,7 +19,7 @@ const Recommend = ({show, data, currUser}) => {
   return (
     <div>
       <h2>recommendations</h2>
-      <p>books in your favorite genre: <strong>{genre}</strong></p>
+      <p>books in your favorite genre: <strong>{genreUser}</strong></p>
 
       <table>
         <tbody>
@@ -38,7 +32,7 @@ const Recommend = ({show, data, currUser}) => {
               published
             </th>
           </tr>
-          { listbooks.map((a) =>
+          { books.map((a) =>
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

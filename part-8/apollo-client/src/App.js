@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommend from './components/Recommend'
-import { useQuery, useApolloClient } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS, GET_ME } from './queries'
+import { useLazyQuery, useQuery, useApolloClient } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, BOOKS_BY_GENRE, GET_ME } from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -32,11 +32,30 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
-  const [genre, setGenre] = useState([])
+  const [genreBooks, setGenreBooks] = useState([])
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
   const currUser = useQuery(GET_ME)
   const client = useApolloClient()
+  const [getBooks, result] = useLazyQuery(BOOKS_BY_GENRE)
+  const [listbooks, setListbooks] = useState(null)
+  const [genreUser, setGenreUser] = useState('')
+
+  const showBooks = () => {
+    setPage('recommend')
+    getBooks({ variables: { findGenre: genreUser } })
+  }
+
+  useEffect(() => {
+    if (result.data) {
+      setListbooks(result.data.allBooks)
+    }
+    if(currUser) {
+      if(currUser.data) {
+        if(currUser.data.me) setGenreUser(currUser.data.me.favoriteGenre)
+      }
+    }
+  }, [result, currUser])
 
   if (!token) {
     const data = localStorage.getItem('listbooks-user-token', token)
@@ -49,7 +68,8 @@ const App = () => {
 
   const logout = () => {
     setToken(null)
-    setGenre([])
+    setGenreBooks([])
+    setGenreUser('')
     localStorage.clear()
     client.resetStore()
     setPage('authors')
@@ -63,8 +83,8 @@ const App = () => {
   }
 
   const list = (!books.data) ? null : books.data.allBooks
-  let filter = (genre) ? list.filter(b => {
-    return (b.genres.find(g => g === genre))
+  let filterBooks = (genreBooks) ? list.filter(b => {
+    return (b.genres.find(g => g === genreBooks))
   }) : null
 
 
@@ -80,7 +100,7 @@ const App = () => {
       :
         <>
           <button onClick={() => setPage('add')}>add book</button>
-          <button onClick={() => setPage('recommend')}>recommend</button>
+          <button onClick={() => showBooks(genreUser)}>recommend</button>
           <button onClick={logout}>logout</button>
         </>
       }
@@ -102,8 +122,9 @@ const App = () => {
       />
 
       <Books
-        show={page === 'books'} token={token}
-        genre={genre} setGenre={setGenre} filter={filter}
+        show={page === 'books'}
+        filterBooks={filterBooks} token={token}
+        genreBooks={genreBooks} setGenreBooks={setGenreBooks}
         data={(!books.data) ? null : books.data.allBooks}
       />
 
@@ -114,8 +135,9 @@ const App = () => {
       />
 
       <Recommend
-        show={page === 'recommend'} currUser={currUser}
-        data={(!books.data) ? null : books.data.allBooks}
+        show={page === 'recommend'}
+        data={listbooks}
+        genreUser={genreUser}
       />
 
     </div>
