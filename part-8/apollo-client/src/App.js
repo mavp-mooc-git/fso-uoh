@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
@@ -35,27 +35,27 @@ const App = () => {
   const [genreBooks, setGenreBooks] = useState([])
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
-  const currUser = useQuery(GET_ME)
   const client = useApolloClient()
-  const [getBooks, result] = useLazyQuery(BOOKS_BY_GENRE)
   const [listbooks, setListbooks] = useState(null)
   const [genreUser, setGenreUser] = useState('')
 
-  const showBooks = () => {
-    setPage('recommend')
-    getBooks({ variables: { findGenre: genreUser } })
-  }
-
-  useEffect(() => {
-    if (result.data) {
+  const [getBooks, result] = useLazyQuery(BOOKS_BY_GENRE, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      // result.data === data
       setListbooks(result.data.allBooks)
     }
-    if(currUser) {
-      if(currUser.data) {
-        if(currUser.data.me) setGenreUser(currUser.data.me.favoriteGenre)
-      }
+  })
+  const [getUser, currUser] = useLazyQuery(GET_ME, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      // currUser.data === data
+      getBooks({
+        variables: { findGenre: currUser.data.me.favoriteGenre }
+      })
+      setGenreUser(currUser.data.me.favoriteGenre)
     }
-  }, [result, currUser])
+  })
 
   if (!token) {
     const data = localStorage.getItem('listbooks-user-token', token)
@@ -100,7 +100,7 @@ const App = () => {
       :
         <>
           <button onClick={() => setPage('add')}>add book</button>
-          <button onClick={() => showBooks(genreUser)}>recommend</button>
+          <button onClick={() => setPage('recommend')}>recommend</button>
           <button onClick={logout}>logout</button>
         </>
       }
@@ -110,9 +110,8 @@ const App = () => {
 
       <LoginForm
         show={page === 'login'}
-        setToken={setToken}
-        setError={notify}
-        setPage={setPage}
+        setToken={setToken} setError={notify}
+        setPage={setPage}   getUser={getUser}
       />
 
       <Authors
@@ -130,8 +129,8 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
-        setError={notify}
-        setPage={setPage}
+        setError={notify} setPage={setPage}
+        genreUser={genreUser} getBooks={getBooks}
       />
 
       <Recommend
