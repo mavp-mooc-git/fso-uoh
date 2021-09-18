@@ -1,4 +1,12 @@
-const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
+const { UserInputError, AuthenticationError } = require('apollo-server')
+const { createServer } = require('http')
+const express = require('express')
+const { execute, subscribe } = require('graphql')
+const { ApolloServer, gql } = require('apollo-server-express')
+const { PubSub } = require('graphql-subscriptions')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const pubsub = new PubSub()
 const mongoose = require('mongoose')
 const Author = require('./models/author')
 const Book = require('./models/book')
@@ -70,6 +78,10 @@ const typeDefs = gql`
     ): Token
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
@@ -135,6 +147,9 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      pubsub.publish('NEW_BOOK_ADDED', { bookAdded: book })
+
       return book
     },
     editAuthor: async (root, args, context) => {
@@ -183,25 +198,66 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
     }
-  }
-}
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['NEW_BOOK_ADDED'])
+    },
+  },
+};
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
-    }
-  }
-})
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+(async () => {
+  const PORT = 4000
+  const app = express()
+  const httpServer = createServer(app)
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      const auth = req ? req.headers.authorization : null
+      if (auth && auth.toLowerCase().startsWith('bearer ')) {
+        const decodedToken = jwt.verify(
+          auth.substring(7), process.env.JWT_SECRET
+        )
+        const currentUser = await User.findById(decodedToken.id)
+        return { currentUser }
+      }
+    },
+    plugins: [{
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            subscriptionServer.close();
+          }
+        };
+      }
+    }],
+  })
+
+  await server.start();
+  server.applyMiddleware({ app });
+
+  const subscriptionServer = SubscriptionServer.create({
+    schema,
+    execute,
+    subscribe,
+    onConnect: (connectionParams, webSocket, context) => {
+      console.log('Subscriptions connected!')
+    },
+    onDisconnect: (webSocket, context) => {
+      console.log('Subscriptions disconnected!')
+    },
+  }, {
+    server: httpServer,
+    path: server.graphqlPath,
+  })
+
+  httpServer.listen(PORT, () => {
+    console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+    console.log(`Subscriptions ready at ws://localhost:${PORT}${server.graphqlPath}`)
+  })
+
+})()
 
