@@ -9,7 +9,7 @@ const LoginForm = ({show, setError, setToken, setPage, getUser }) => {
     onCompleted: () => getUser(),
     onError: (error) => {
       (!error.graphQLErrors[0]) ? setError(error) :
-      setError(error.graphQLErrors[0].message)
+        setError(error.graphQLErrors[0].message)
     }
   })
 

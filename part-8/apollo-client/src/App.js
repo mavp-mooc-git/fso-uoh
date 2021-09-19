@@ -4,8 +4,12 @@ import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommend from './components/Recommend'
-import { useLazyQuery, useQuery, useApolloClient } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS, BOOKS_BY_GENRE, GET_ME } from './queries'
+import {
+  useLazyQuery, useQuery, useSubscription, useApolloClient
+} from '@apollo/client'
+import {
+  ALL_AUTHORS, ALL_BOOKS, BOOKS_BY_GENRE, GET_ME, NEW_BOOK_ADDED
+} from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -39,21 +43,49 @@ const App = () => {
   const [listbooks, setListbooks] = useState(null)
   const [genreUser, setGenreUser] = useState('')
 
-  const [getBooks, result] = useLazyQuery(BOOKS_BY_GENRE, {
+  const [getBooks] = useLazyQuery(BOOKS_BY_GENRE, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      // result.data === data
-      setListbooks(result.data.allBooks)
+      setListbooks(data.allBooks)
     }
   })
-  const [getUser, currUser] = useLazyQuery(GET_ME, {
+  const [getUser] = useLazyQuery(GET_ME, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      // currUser.data === data
-      getBooks({
-        variables: { findGenre: currUser.data.me.favoriteGenre }
+      if(data && data.me) {
+        getBooks({
+          variables: { findGenre: data.me.favoriteGenre }
+        })
+        setGenreUser(data.me.favoriteGenre)
+      }
+    }
+  })
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(p => p.title).includes(object.title)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
       })
-      setGenreUser(currUser.data.me.favoriteGenre)
+      const ifgen = addedBook.genres.filter(g => g === genreUser)
+      if(ifgen.length > 0) {
+        getBooks({
+          variables: { findGenre: genreUser }
+        })
+      }
+    }
+  }
+
+  useSubscription(NEW_BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      //notify(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+      window.alert(`${addedBook.title} added`)
     }
   })
 
@@ -130,7 +162,7 @@ const App = () => {
       <NewBook
         show={page === 'add'}
         setError={notify} setPage={setPage}
-        genreUser={genreUser} getBooks={getBooks}
+        updateCacheWith={updateCacheWith}
       />
 
       <Recommend
