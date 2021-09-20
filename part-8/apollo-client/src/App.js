@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
@@ -43,6 +43,14 @@ const App = () => {
   const [listbooks, setListbooks] = useState(null)
   const [genreUser, setGenreUser] = useState('')
 
+  useEffect(() => {
+    authors.refetch()
+    getUser()
+    getBooks({
+      variables: { findGenre: genreUser }
+    })
+  }, [books]) // eslint-disable-line
+
   const [getBooks] = useLazyQuery(BOOKS_BY_GENRE, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
@@ -52,7 +60,8 @@ const App = () => {
   const [getUser] = useLazyQuery(GET_ME, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      if(data && data.me) {
+      //if(data && data.me) {
+      if(data?.me) {
         getBooks({
           variables: { findGenre: data.me.favoriteGenre }
         })
@@ -65,11 +74,11 @@ const App = () => {
     const includedIn = (set, object) =>
       set.map(p => p.title).includes(object.title)
 
-    const dataInStore = client.readQuery({ query: ALL_BOOKS })
-    if (!includedIn(dataInStore.allBooks, addedBook)) {
+    const booksInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(booksInStore.allBooks, addedBook)) {
       client.writeQuery({
         query: ALL_BOOKS,
-        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+        data: { allBooks : booksInStore.allBooks.concat(addedBook) }
       })
       const ifgen = addedBook.genres.filter(g => g === genreUser)
       if(ifgen.length > 0) {
