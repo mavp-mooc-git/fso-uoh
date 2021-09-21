@@ -11,6 +11,11 @@ const schema = new mongoose.Schema({
   born: {
     type: Number,
   },
+  // error fixed, books array added in cloud database
+  books: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Book'
+  },
 })
 
 schema.plugin(uniqueValidator)
