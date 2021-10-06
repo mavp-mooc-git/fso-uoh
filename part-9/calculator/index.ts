@@ -1,7 +1,11 @@
 import express from 'express';
+import { Request } from 'express';
 import calculateBmi from './bmiCalculator';
+import calculateExercises from './exerciseCalculator';
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get('/ping', (_req, res) => {
   res.send('pong');
@@ -23,6 +27,28 @@ app.get('/bmi', (req, res) => {
       height,
       bmi: calculateBmi(height, weight)
     });
+  } catch(e: unknown) {
+    if (e instanceof Error) {
+      res.status(400);
+      res.send({
+        error: e.message
+      });
+    }
+  }
+});
+
+type reqBody = {
+  daily_exercises: Array<number>,
+  target: number
+};
+
+app.post('/exercises', (req: Request<unknown, unknown, reqBody>, res) => {
+  const {daily_exercises, target} = req.body;
+
+  try {
+    if (!target || !daily_exercises) throw new Error('missing parameters');
+    if (isNaN(target) || daily_exercises.find(n => isNaN(n) )) throw new Error('malformatted parameters');
+    res.send(calculateExercises(target, daily_exercises));
   } catch(e: unknown) {
     if (e instanceof Error) {
       res.status(400);

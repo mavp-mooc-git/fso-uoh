@@ -36,35 +36,4 @@ const calculateExercises = (days: number, data: Array<number>): Result => {
   return result;
 };
 
-//console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
-
-try {
-  interface Values {
-    t: number;
-    data: Array<number>;
-  }
-
-  const parseArguments = (args: Array<string>): Values => {
-    if (args.length < 6) throw new Error('Not enough arguments');
-    if (args.length > 24) throw new Error('Too many arguments');
-
-    const [,,t, ...data] = [...args];
-
-    if (!isNaN(Number(t)) && !isNaN(Number(...data))) {
-      return {
-        t: Number(args[2]),
-        data: data.map(n => Number(n))
-      };
-    } else {
-      throw new Error('Provided values were not numbers!');
-    }
-  };
-
-  const { t, data } = parseArguments(process.argv);
-  console.log(calculateExercises(t, data));
-} catch(e: unknown) {
-  if (e instanceof Error) {
-    console.log('Error, something bad happened, message: ', e.message);
-  }
-}
-
+export default calculateExercises;

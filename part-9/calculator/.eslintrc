@@ -24,8 +24,8 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json",
     //"ecmaVersion": 11,
-    //"sourceType": "module"
+    //"sourceType": "module",
+    "project": "./tsconfig.json"
   }
 }
