@@ -48,20 +48,23 @@ try {
     if (args.length < 6) throw new Error('Not enough arguments');
     if (args.length > 24) throw new Error('Too many arguments');
 
-    const [,,t, ...data] = [...args]
+    const [,,t, ...data] = [...args];
 
     if (!isNaN(Number(t)) && !isNaN(Number(...data))) {
       return {
         t: Number(args[2]),
         data: data.map(n => Number(n))
-      }
+      };
     } else {
       throw new Error('Provided values were not numbers!');
     }
-  }
+  };
 
   const { t, data } = parseArguments(process.argv);
   console.log(calculateExercises(t, data));
-} catch (e) {
-  console.log('Error, something bad happened, message: ', e.message);
+} catch(e: unknown) {
+  if (e instanceof Error) {
+    console.log('Error, something bad happened, message: ', e.message);
+  }
 }
+

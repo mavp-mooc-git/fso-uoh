@@ -23,11 +23,13 @@ app.get('/bmi', (req, res) => {
       height,
       bmi: calculateBmi(height, weight)
     });
-  } catch(e) {
-    res.status(400);
-    res.send({
-      error: e.message
-    });
+  } catch(e: unknown) {
+    if (e instanceof Error) {
+      res.status(400);
+      res.send({
+        error: e.message
+      });
+    }
   }
 });
 
