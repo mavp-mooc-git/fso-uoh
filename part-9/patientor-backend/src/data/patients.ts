@@ -1,6 +1,7 @@
 import { Patients } from "../types";
+import toNewDiaryEntry from "../utils";
 
-const patientsEntries: Array<Patients> = [
+const data = [
   {
     "id": "d2773336-f723-11e9-8f0b-362b9e155667",
     "name": "John McClane",
@@ -43,5 +44,10 @@ const patientsEntries: Array<Patients> = [
   }
 ];
 
-export default patientsEntries;
+const patientsEntries: Patients [] = data.map(obj => {
+  const object = toNewDiaryEntry(obj) as Patients;
+  object.id = obj.id;
+  return object;
+});
 
+export default patientsEntries;
