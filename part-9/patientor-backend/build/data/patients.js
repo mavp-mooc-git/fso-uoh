@@ -1,4 +1,6 @@
-[
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const patientsEntries = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
         "name": "John McClane",
@@ -39,4 +41,5 @@
         "gender": "male",
         "occupation": "Digital evangelist"
     }
-]
+];
+exports.default = patientsEntries;
