@@ -11,6 +11,7 @@ import PatientListPage from "./PatientListPage";
 
 const App = () => {
   const [, dispatch] = useStateValue();
+  
   React.useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 

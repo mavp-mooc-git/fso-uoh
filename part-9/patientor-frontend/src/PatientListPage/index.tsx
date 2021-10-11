@@ -30,6 +30,7 @@ const PatientListPage = () => {
       );
       dispatch({ type: "ADD_PATIENT", payload: newPatient });
       closeModal();
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     } catch (e: unknown | any) {
       console.error(e.response?.data || 'Unknown Error');
       setError(e.response?.data?.error || 'Unknown error');

@@ -4,6 +4,7 @@ import { Patient } from "../types";
 import { Action } from "./reducer";
 
 export type State = {
+  //patients: { [id: string]: Patient | undefined };  // patients: Map<string, Patient>;
   patients: { [id: string]: Patient };
 };
 
@@ -21,7 +22,8 @@ type StateProviderProps = {
   children: React.ReactElement;
 };
 
-export const StateProvider: React.FC<StateProviderProps> = ({
+//export const StateProvider: React.FC<StateProviderProps> = ({
+export const StateProvider = ({
   reducer,
   children
 }: StateProviderProps) => {
@@ -32,4 +34,5 @@ export const StateProvider: React.FC<StateProviderProps> = ({
     </StateContext.Provider>
   );
 };
+
 export const useStateValue = () => useContext(StateContext);

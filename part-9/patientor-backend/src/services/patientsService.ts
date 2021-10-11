@@ -1,29 +1,32 @@
 import {v1 as uuid} from 'uuid';
 import patientsData from '../data/patients';
-import { NewPatientEntry, NonSsnPatients, Patients } from '../types';
-const patients: Array<Patients> = patientsData;
+import { NewPatientEntry, NonSsnPatients, Patient } from '../types';
+const patients: Array<Patient> = patientsData;
 const newId = uuid();
 
-const getEntries = (): Array<Patients> => {
+const getEntries = (): Array<Patient> => {
   return patients;
 };
 
-const findById = (id: string): Patients | undefined => {
+const findById = (id: string): Patient | undefined => {
   const entry = patients.find(p => p.id === id);
   return entry;
 };
 
 const getNonSsnEntries = (): NonSsnPatients[] => {
-  return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }));
+  return patients.map((
+      { id, name, dateOfBirth, gender, occupation, entries }
+    ) => ({
+      id,
+      name,
+      dateOfBirth,
+      gender,
+      occupation,
+      entries,
+    }));
 };
 
-const addEntry = ( entry: NewPatientEntry ): Patients => {
+const addEntry = ( entry: NewPatientEntry ): Patient => {
 
   const newPatientEntry = {
     id: newId,
@@ -36,7 +39,7 @@ const addEntry = ( entry: NewPatientEntry ): Patients => {
 
 export default {
   getEntries,
-  addEntry,
+  findById,
   getNonSsnEntries,
-  findById
+  addEntry
 };

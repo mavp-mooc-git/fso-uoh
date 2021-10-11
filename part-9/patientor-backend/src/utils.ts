@@ -48,13 +48,18 @@ const parseOcupation = (occupation: any): string => {
   return occupation;
 };
 
+const parseEntries = (entries: any): Array<{}> => {
+  return entries;
+};
+
 const toNewPatientEntry = (object: any): NewPatientEntry => {
   return {
     name: parseName(object.name),
     dateOfBirth: parseDate(object.dateOfBirth),
     ssn: parseSsn(object.ssn),
     gender: parseGender(object.gender),
-    occupation: parseOcupation(object.occupation)
+    occupation: parseOcupation(object.occupation),
+    entries: parseEntries(object.entries)
   };
 };
 
