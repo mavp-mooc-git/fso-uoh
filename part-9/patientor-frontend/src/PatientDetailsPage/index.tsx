@@ -2,10 +2,9 @@ import React from "react";
 import axios from "axios";
 import { Table, List } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
-
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientSsn } from "../state";
 
 const PatientDetails = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -22,7 +21,7 @@ const PatientDetails = () => {
           const { data: patientFromApi } = await axios.get<Patient>(
             `${apiBaseUrl}/patients/${id}`
           );
-          dispatch({ type: "SET_PATIENT_SSN", payload: patientFromApi });
+          dispatch(setPatientSsn(patientFromApi));
         } catch (e) {
           console.error(e);
         }
@@ -30,7 +29,7 @@ const PatientDetails = () => {
       void fetchPatientDetails();
     }, []);
   } else {
-    console.log('Getting data from State, ssn:', patient[0].ssn);
+    console.log('Getting State data, ssn:', patient[0].ssn);
   }
 
   const IconType = (gender: string) => {
