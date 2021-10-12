@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/', (_req, res) => {
   res.send(patientsService.getNonSsnEntries());
+  //res.send(patientsService.getEntries());
 });
 
 router.get('/:id', (req, res) => {

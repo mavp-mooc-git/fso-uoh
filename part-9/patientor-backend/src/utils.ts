@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from './types';
+import { Gender, NewPatientEntry, Entry } from './types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const isDate = (date: string): boolean => {
@@ -48,9 +48,7 @@ const parseOcupation = (occupation: any): string => {
   return occupation;
 };
 
-const parseEntries = (entries: any): Array<{}> => {
-  return entries;
-};
+const parseEntries = (entries: Array<Entry>): Entry[] => entries;
 
 const toNewPatientEntry = (object: any): NewPatientEntry => {
   return {
