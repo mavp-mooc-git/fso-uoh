@@ -1,15 +1,18 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 
 import { Action } from "./reducer";
 
 export type State = {
-  //patients: { [id: string]: Patient | undefined };  // patients: Map<string, Patient>;
+  //patients: { [id: string]: Patient | undefined };
+  // patients: Map<string, Patient>;
   patients: { [id: string]: Patient };
+  diagnosis: { [codes: string]: Diagnosis };
 };
 
 const initialState: State = {
-  patients: {}
+  patients: {},
+  diagnosis: {}
 };
 
 export const StateContext = createContext<[State, React.Dispatch<Action>]>([
@@ -22,7 +25,6 @@ type StateProviderProps = {
   children: React.ReactElement;
 };
 
-//export const StateProvider: React.FC<StateProviderProps> = ({
 export const StateProvider = ({
   reducer,
   children

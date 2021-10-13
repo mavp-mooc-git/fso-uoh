@@ -2,18 +2,16 @@ import React from "react";
 import axios from "axios";
 import { Table, List } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
-import { Patient } from "../types";
+import { Patient,  } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientSsn } from "../state";
 
 const PatientDetails = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnosis }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
-  const patient = Object.values(patients).filter((patient: Patient) => (
-    patient.id === id
+  const patient = Object.values(patients).filter((p: Patient) => (
+    p.id === id
   ));
-  const entries = patient[0].entries.map(e => e);
-  console.log('entries', entries);
 
   if (!patient[0].ssn) {
     React.useEffect(() => {
@@ -31,7 +29,7 @@ const PatientDetails = () => {
       void fetchPatientDetails();
     }, []);
   } else {
-    console.log('Getting State data, ssn:', patient[0].ssn);
+    console.log('Getting State data, ssn');
   }
 
   const IconType = (gender: string) => {
@@ -70,7 +68,8 @@ const PatientDetails = () => {
         </Table.Body>
       </Table>
       <h3>entries</h3>
-      { entries.map((e,i) => {
+      {(patient[0].entries.length === 0) ? <p>no data available</p> :
+        patient[0].entries.map((e,i) => {
           return (
             <div key={`d${i}`}>
               <p>
@@ -78,9 +77,12 @@ const PatientDetails = () => {
               </p>
               { (e?.diagnosisCodes) ?
                   <ul>
-                    { e.diagnosisCodes.map((d,i) => <li key={`li${i}`}>{d}</li> ) }
+                    { e.diagnosisCodes.map((d,i) => (
+                      <li key={`li${i}`}>{d} {diagnosis[d].name}</li>
+                      )
+                    ) }
                   </ul>
-              : null }
+                    : null }
             </div>
           );
         }) }
