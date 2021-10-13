@@ -12,6 +12,8 @@ const PatientDetails = () => {
   const patient = Object.values(patients).filter((patient: Patient) => (
     patient.id === id
   ));
+  const entries = patient[0].entries.map(e => e);
+  console.log('entries', entries);
 
   if (!patient[0].ssn) {
     React.useEffect(() => {
@@ -67,6 +69,21 @@ const PatientDetails = () => {
           </Table.Row>
         </Table.Body>
       </Table>
+      <h3>entries</h3>
+      { entries.map((e,i) => {
+          return (
+            <div key={`d${i}`}>
+              <p>
+                {e.date} <em>{e.description}</em>
+              </p>
+              { (e?.diagnosisCodes) ?
+                  <ul>
+                    { e.diagnosisCodes.map((d,i) => <li key={`li${i}`}>{d}</li> ) }
+                  </ul>
+              : null }
+            </div>
+          );
+        }) }
     </div>
   );
 };

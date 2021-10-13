@@ -15,12 +15,13 @@ const findById = (id) => {
     return entry;
 };
 const getNonSsnEntries = () => {
-    return patients_1.default.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
         gender,
         occupation,
+        entries,
     }));
 };
 const addEntry = (entry) => {
@@ -30,7 +31,7 @@ const addEntry = (entry) => {
 };
 exports.default = {
     getEntries,
-    addEntry,
+    findById,
     getNonSsnEntries,
-    findById
+    addEntry
 };

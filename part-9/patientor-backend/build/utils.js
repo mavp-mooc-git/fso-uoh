@@ -41,13 +41,15 @@ const parseOcupation = (occupation) => {
     }
     return occupation;
 };
+const parseEntries = (entries) => entries;
 const toNewPatientEntry = (object) => {
     return {
         name: parseName(object.name),
         dateOfBirth: parseDate(object.dateOfBirth),
         ssn: parseSsn(object.ssn),
         gender: parseGender(object.gender),
-        occupation: parseOcupation(object.occupation)
+        occupation: parseOcupation(object.occupation),
+        entries: parseEntries(object.entries)
     };
 };
 exports.default = toNewPatientEntry;
