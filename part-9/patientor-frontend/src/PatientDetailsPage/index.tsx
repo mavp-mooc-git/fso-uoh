@@ -1,10 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { Table, List } from "semantic-ui-react";
+import { Divider, Icon, List, Table } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import { Patient,  } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientSsn } from "../state";
+import EntryDetails from "../components/EntryDetails";
 
 const PatientDetails = () => {
   const [{ patients, diagnosis }, dispatch] = useStateValue();
@@ -43,6 +44,8 @@ const PatientDetails = () => {
     }
   };
 
+  let diag = false;
+
   return (
     <div className="App">
       <Table collapsing>
@@ -71,18 +74,40 @@ const PatientDetails = () => {
       {(patient[0].entries.length === 0) ? <p>no data available</p> :
         patient[0].entries.map((e,i) => {
           return (
-            <div key={`d${i}`}>
-              <p>
-                {e.date} <em>{e.description}</em>
-              </p>
-              { (e?.diagnosisCodes) ?
-                  <ul>
-                    { e.diagnosisCodes.map((d,i) => (
-                      <li key={`li${i}`}>{d} {diagnosis[d].name}</li>
-                      )
-                    ) }
-                  </ul>
-                    : null }
+            <div key={`dp${i}`}>
+              {<EntryDetails entry={e} />}
+            </div>
+          );
+        }) }
+        <hr style={{ "borderTop": "solid silver 1px"}} />
+        <p style={{ "color": "#555"}}><strong>Diagnosis:</strong></p>
+        {(patient[0].entries.length === 0) ?
+          <p style={{ "color": "#444"}}>
+            <Icon name='close' />null data
+          </p> :
+        patient[0].entries.map((e,i) => {
+          return (
+            <div key={`dd${i}`}>
+              {(e?.diagnosisCodes) ?
+                <ul  style={{ "color": "#444"}}>
+                  { e.diagnosisCodes.map((d,i) => (
+                    <div key={`li${i}`}>
+                      <List.Item>
+                        <Icon name='clipboard outline' />
+                        <strong>{d}</strong> &nbsp; {diagnosis[d].name}
+                      </List.Item>
+                    </div>
+                  )) }
+                </ul> : (!diag) ?
+                <div key={`li${i}`}>
+                  <List.Item style={{ "color": "#444"}}>
+                    <Icon name='clipboard outline' />
+                    no diagnosis
+                  </List.Item>
+                  <Divider hidden />
+                  {diag = true}
+                </div>
+              : null }
             </div>
           );
         }) }
