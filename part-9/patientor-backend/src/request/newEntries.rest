@@ -1,0 +1,50 @@
+// POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries HTTP/1.1
+@baseUrl = http://localhost:3001/api/patients
+@id = d27736ec-f723-11e9-8f0b-362b9e155667
+
+
+### HospitalEntry
+POST {{baseUrl}}/{{id}}/entries HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "new description entry",
+  "date": "1980-12-23",
+  "specialist": "specialist name",
+  "?diagnosisCodes": ["code"],
+  "type": "Hospital",
+  "discharge": {
+    "date": "1980-12-23",
+    "criteria": "criteria string"
+  }
+}
+
+### OccupationalHealthcareEntry
+POST {{baseUrl}}/{{id}}/entries HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "new description entry",
+  "date": "1980-12-23",
+  "specialist": "specialist name",
+  "?diagnosisCodes": ["code"],
+  "type": "OccupationalHealthcare",
+  "employerName": "employer name",
+  "sickLeave": {
+    "startDate": "1980-12-23",
+    "endDate": "1980-12-23"
+  }
+}
+
+### HealthCheckEntry
+POST {{baseUrl}}/{{id}}/entries HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "new description entry",
+  "date": "1980-12-23",
+  "specialist": "specialist name",
+  "?diagnosisCodes": ["code"],
+  "type": "HealthCheck",
+  "healthCheckRating": 0
+}

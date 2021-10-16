@@ -3,8 +3,9 @@ Content-Type: application/json
 
 {
   "name": "someone else",
-  "dateOfBirth": "1980-12-55",
+  "dateOfBirth": "1980-12-23",
   "ssn": "34353535-F54",
-  "gender": "nodefined",
-  "occupation": "new jober"
+  "gender": "male",
+  "occupation": "new jober",
+  "entries": []
 }
