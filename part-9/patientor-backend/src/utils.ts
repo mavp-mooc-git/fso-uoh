@@ -1,5 +1,5 @@
 import {
-  Entry, Gender, HealthCheckRating, NewPatient, NonIdEntry
+  Diagnosis, Entry, Gender, HealthCheckRating, NewPatient, NonIdEntry
 } from './types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -125,6 +125,7 @@ const parseCheckEntry = (healthCheckRating: number): HealthCheckRating => {
   return healthCheckRating as HealthCheckRating;
 };
 
+const parseDiagnosis = (codes: Array<Diagnosis['code']>): Array<Diagnosis['code']> => codes;
 
 export const toNewEntry = (object: any): NonIdEntry => {
 
@@ -134,6 +135,7 @@ export const toNewEntry = (object: any): NonIdEntry => {
     description: parseString(object.description, 'description'),
     date: parseEntryDate(object.date),
     specialist: parseString(object.specialist, 'specialist'),
+    diagnosisCodes: parseDiagnosis(object.diagnosisCodes)
   };
 
   switch (object.type) {

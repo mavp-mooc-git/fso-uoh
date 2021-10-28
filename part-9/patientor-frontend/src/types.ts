@@ -66,3 +66,23 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+// Define Objects without some properties
+export type NonSsnPatients = UnionOmit<Patient, 'ssn'>;
+export type NewPatient = UnionOmit<Patient, 'id'>;
+export type PublicPatient = UnionOmit<Patient, 'ssn' | 'entries' >;
+// Define Entry without the 'id' property
+export type NonIdEntry = UnionOmit<Entry, 'id'>;
+
+export enum EntryTypes {
+  Hospital = "Hospital",
+  OccupationalHealthcare = "OccupationalHealthcare",
+  HealthCheck = "HealthCheck"
+}
+
+export enum Discharge {
+  date = '',
+  criteria = ''
+}

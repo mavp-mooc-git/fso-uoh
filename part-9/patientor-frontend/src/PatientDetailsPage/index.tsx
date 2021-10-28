@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
-import { Divider, Icon, List, Table } from "semantic-ui-react";
+import { Button, Divider, Icon, List, Table } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import { Patient,  } from "../types";
 import { apiBaseUrl } from "../constants";
-import { useStateValue, setPatientSsn } from "../state";
+import { addPatient, useStateValue, setPatientSsn } from "../state";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
 const PatientDetails = () => {
   const [{ patients, diagnosis }, dispatch] = useStateValue();
@@ -14,8 +16,12 @@ const PatientDetails = () => {
     p.id === id
   ));
 
-  if (!patient[0].ssn) {
-    React.useEffect(() => {
+  const [error, setError] = React.useState<string | undefined>();
+  const [entryModalOpen, setEntryModalOpen] = React.useState<boolean>(false);
+  const openEntryModal = (): void => setEntryModalOpen(true);
+
+  React.useEffect(() => {
+    if (!patient[0].ssn) {
       console.log('Connecting with backend');
       const fetchPatientDetails = async () => {
         try {
@@ -28,10 +34,10 @@ const PatientDetails = () => {
         }
       };
       void fetchPatientDetails();
-    }, []);
-  } else {
-    console.log('Getting State data, ssn');
-  }
+    } else {
+      console.log('Getting State data, ssn');
+    }
+  }, []);
 
   const IconType = (gender: string) => {
     switch (gender) {
@@ -45,6 +51,27 @@ const PatientDetails = () => {
   };
 
   let diag = false;
+
+  const closeEntryModal = (): void => {
+    setEntryModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    console.log('values', values);
+    try {
+      const { data: newEntry } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch(addPatient(newEntry));
+      closeEntryModal();
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    } catch (e: unknown | any) {
+      console.error(e.response?.data || 'Unknown Error');
+      setError(e.response?.data?.error || 'Unknown error');
+    }
+  };
 
   return (
     <div className="App">
@@ -70,6 +97,15 @@ const PatientDetails = () => {
           </Table.Row>
         </Table.Body>
       </Table>
+
+      <AddEntryModal
+        modalOpen={entryModalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeEntryModal}
+      />
+      <Button onClick={() => openEntryModal()}>Add New Entry Details</Button>
+
       <h3>entries</h3>
       {(patient[0].entries.length === 0) ? <p>no data available</p> :
         patient[0].entries.map((e,i) => {
