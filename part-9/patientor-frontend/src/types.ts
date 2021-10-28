@@ -10,6 +10,11 @@ export enum Gender {
   Other = "other"
 }
 
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
 export interface Patient {
   id: string;
   name: string;
@@ -30,10 +35,7 @@ export interface BaseEntry {
 
 export interface HospitalEntry extends BaseEntry {
   type: 'Hospital';
-  discharge: {
-    date: string;
-    criteria: string;
-  };
+  discharge: Discharge;
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
@@ -57,6 +59,8 @@ export interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: HealthCheckRating;
 }
 
+//export interface FormValues extends HospitalEntry {}
+
 export interface EntryProps {
   entry: Entry;
 }
@@ -75,14 +79,10 @@ export type NewPatient = UnionOmit<Patient, 'id'>;
 export type PublicPatient = UnionOmit<Patient, 'ssn' | 'entries' >;
 // Define Entry without the 'id' property
 export type NonIdEntry = UnionOmit<Entry, 'id'>;
+export type FormValues = UnionOmit<HospitalEntry, 'id'>;
 
 export enum EntryTypes {
   Hospital = "Hospital",
   OccupationalHealthcare = "OccupationalHealthcare",
   HealthCheck = "HealthCheck"
-}
-
-export enum Discharge {
-  date = '',
-  criteria = ''
 }

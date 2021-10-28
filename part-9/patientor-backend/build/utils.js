@@ -94,12 +94,14 @@ const parseCheckEntry = (healthCheckRating) => {
     }
     return healthCheckRating;
 };
+const parseDiagnosis = (codes) => codes;
 const toNewEntry = (object) => {
     let entries;
     const base = {
         description: parseString(object.description, 'description'),
         date: parseEntryDate(object.date),
         specialist: parseString(object.specialist, 'specialist'),
+        diagnosisCodes: parseDiagnosis(object.diagnosisCodes)
     };
     switch (object.type) {
         case 'Hospital':

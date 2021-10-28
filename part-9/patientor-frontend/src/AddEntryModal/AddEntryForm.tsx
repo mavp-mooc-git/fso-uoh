@@ -4,8 +4,9 @@ import { Field, Formik, Form } from "formik";
 import {
   DiagnosisSelection, TextField, SelectField, TypeOption
 } from "../AddEntryModal/FormField";
-import { NonIdEntry, EntryTypes } from "../types";
+import { NonIdEntry, EntryTypes, FormValues } from "../types";
 import { useStateValue } from "../state";
+import { FormikErrors } from 'formik';
 
 /*
  * use type Entry, but omit id field.
@@ -40,29 +41,22 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
         }
       }}
       onSubmit={onSubmit}
-      validate={values => {
+      validate={(values: FormValues) => {
         const requiredError = "Field is required";
-        const errors: { [field: string]: string } = {};
-        if (!values.description) {
-          errors.description = requiredError;
-        }
-        if (!values.date) {
-          errors.date = requiredError;
-        }
-        if (!values.specialist) {
-          errors.specialist = requiredError;
-        }
-        if (!values.type) {
-          errors.type = requiredError;
-        }
-        /*if (!values.discharge) {
-          errors = { 
-            discharge: {
-              date: requiredError,
-              criteria: requiredError
+        let errors: FormikErrors<FormValues> = {};
+        if (!values.description || !values.date || !values.specialist ||
+            !values.type || !values.discharge.date || !values.discharge.criteria) {
+              errors = {
+                description: requiredError,
+                date: requiredError,
+                specialist: requiredError,
+                type: requiredError,
+                discharge: {
+                  date: requiredError,
+                  criteria: requiredError
+                }
+              };
             }
-          }
-        }*/
         return errors;
       }}
     >
