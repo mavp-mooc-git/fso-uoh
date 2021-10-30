@@ -104,7 +104,7 @@ interface SickLeave {
 }
 
 const isSickLeave = (param: any): param is SickLeave => {
-  return (isString(param.date) && isString(param.criteria));
+  return (isString(param.startDate) && isString(param.endDate));
 };
 
 const parseSickLeave = (sickLeave: any): SickLeave => {

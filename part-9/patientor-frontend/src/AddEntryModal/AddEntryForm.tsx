@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 import {
-  DiagnosisSelection, TextField, SelectField, TypeOption
+  DiagnosisSelection, SelectField, TextField, TypeOption
 } from "../AddEntryModal/FormField";
-import { NonIdEntry, EntryTypes, FormValues } from "../types";
+import { NonIdEntry, EntryTypes } from "../types";
 import { useStateValue } from "../state";
 import { FormikErrors } from 'formik';
 
@@ -26,7 +26,8 @@ const typeOptions: TypeOption[] = [
 
 export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
   const [{ diagnosis }] = useStateValue();
-
+  const [type, setType] = useState('Hospital');
+  
   return (
     <Formik
       initialValues={{
@@ -38,18 +39,29 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
         discharge: {
           date: '',
           criteria: ''
-        }
+        },
+        employerName: '',
+        sickLeave: {
+          startDate: '',
+          endDate: ''
+        },
+        healthCheckRating: 0
       }}
       onSubmit={onSubmit}
-      validate={(values: FormValues) => {
+      validate={(values: NonIdEntry) => {
+        setType(values.type);
         const requiredError = "Field is required";
-        let errors: FormikErrors<FormValues> = {};
-        if (!values.description || !values.date || !values.specialist ||
+        let errors: FormikErrors<NonIdEntry> = {};
+        const baseErr = {
+          description: requiredError,
+          date: requiredError,
+          specialist: requiredError,
+        };
+        if(values.type === 'Hospital') {
+          if (!values.description || !values.date || !values.specialist ||
             !values.type || !values.discharge.date || !values.discharge.criteria) {
               errors = {
-                description: requiredError,
-                date: requiredError,
-                specialist: requiredError,
+                ...baseErr,
                 type: requiredError,
                 discharge: {
                   date: requiredError,
@@ -57,6 +69,18 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
                 }
               };
             }
+        }
+        if(values.type === 'OccupationalHealthcare') {
+          if (!values.description || !values.date || !values.specialist ||
+            !values.type || !values.employerName ) {
+              errors = {
+                ...baseErr,
+                type: requiredError,
+                employerName: requiredError
+              };
+            }
+        }
+        
         return errors;
       }}
     >
@@ -64,29 +88,6 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
       {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
-            {/**
-              "description": "new description entry",
-              "date": "1980-12-23",
-              "specialist": "specialist name",
-              "?diagnosisCodes": ["code"],
-
-              "type": "Hospital",
-              "discharge": {
-                "date": "1980-12-23",
-                "criteria": "criteria string"
-              }
-
-              "type": "OccupationalHealthcare",
-              "employerName": "employer name",
-              "sickLeave": {
-                "startDate": "1980-12-23",
-                "endDate": "1980-12-23"
-              }
-
-              "type": "HealthCheck",
-              "healthCheckRating": 0
-            **/}
-            
             <Field
               label="Description"
               placeholder="Description"
@@ -109,24 +110,51 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
               diagnoses={Object.values(diagnosis)}
-            /> 
+            />
             <SelectField
               label="Types"
               name="type"
               options={typeOptions}
             />
-            <Field
-              label="Discharge Date"
-              placeholder="YYYY-MM-DD"
-              name="discharge.date"
-              component={TextField}
-            />
-            <Field
-              label="Discharge Criteria"
-              placeholder="Discharge criteria"
-              name="discharge.criteria"
-              component={TextField}
-            />
+            {
+              (type === 'Hospital') ? 
+              <>
+                <Field
+                  label="Discharge Date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                />
+                <Field
+                  label="Discharge Criteria"
+                  placeholder="Discharge criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                />
+              </> :
+              (type === 'OccupationalHealthcare') ?
+              <>
+                <Field
+                  label="Employer Name"
+                  placeholder="Employer name"
+                  name="employerName"
+                  component={TextField}
+                />
+                <Field
+                  label="SickLeave Start Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.startDate"
+                  component={TextField}
+                />
+                <Field
+                  label="SickLeave End Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.endDate"
+                  component={TextField}
+                />
+              </> : null
+            }
+            
             <Grid>
               <Grid.Column floated="left" width={5}>
                 <Button type="button" onClick={onCancel} color="red">

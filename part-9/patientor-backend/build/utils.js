@@ -77,7 +77,7 @@ const parseDischarge = (discharge) => {
     return discharge;
 };
 const isSickLeave = (param) => {
-    return (isString(param.date) && isString(param.criteria));
+    return (isString(param.startDate) && isString(param.endDate));
 };
 const parseSickLeave = (sickLeave) => {
     if (!sickLeave || !isSickLeave(sickLeave)) {

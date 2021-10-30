@@ -79,7 +79,6 @@ export type NewPatient = UnionOmit<Patient, 'id'>;
 export type PublicPatient = UnionOmit<Patient, 'ssn' | 'entries' >;
 // Define Entry without the 'id' property
 export type NonIdEntry = UnionOmit<Entry, 'id'>;
-export type FormValues = UnionOmit<HospitalEntry, 'id'>;
 
 export enum EntryTypes {
   Hospital = "Hospital",
