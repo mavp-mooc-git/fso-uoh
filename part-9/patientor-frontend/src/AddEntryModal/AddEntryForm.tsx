@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 import {
-  DiagnosisSelection, SelectField, TextField, TypeOption
+  DiagnosisSelection, NumberField, SelectField, TextField, TypeOption
 } from "../AddEntryModal/FormField";
 import { NonIdEntry, EntryTypes } from "../types";
 import { useStateValue } from "../state";
-import { FormikErrors } from 'formik';
 
 /*
  * use type Entry, but omit id field.
@@ -51,34 +50,38 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
       validate={(values: NonIdEntry) => {
         setType(values.type);
         const requiredError = "Field is required";
-        let errors: FormikErrors<NonIdEntry> = {};
-        const baseErr = {
-          description: requiredError,
-          date: requiredError,
-          specialist: requiredError,
-        };
-        if(values.type === 'Hospital') {
-          if (!values.description || !values.date || !values.specialist ||
-            !values.type || !values.discharge.date || !values.discharge.criteria) {
-              errors = {
-                ...baseErr,
-                type: requiredError,
-                discharge: {
-                  date: requiredError,
-                  criteria: requiredError
-                }
+        let errors:
+          | { [field: string]: string }
+          | {
+              [key: string]: {
+                [key: string]: string;
               };
-            }
+            } = {};
+        if (!values.description) {
+          errors.description = requiredError;
+        }
+        if (!values.date) {
+          errors.date = requiredError;
+        }
+        if (!values.specialist) {
+          errors.specialist = requiredError;
+        }
+
+        if(values.type === 'Hospital') {
+          if (!values.discharge.date || !values.discharge.criteria) {
+            errors = {
+              ...errors,
+              discharge: {
+                date: (!values.discharge.date) ? requiredError : '',
+                criteria: (!values.discharge.criteria) ? requiredError : '',
+              }
+            };
+          }
         }
         if(values.type === 'OccupationalHealthcare') {
-          if (!values.description || !values.date || !values.specialist ||
-            !values.type || !values.employerName ) {
-              errors = {
-                ...baseErr,
-                type: requiredError,
-                employerName: requiredError
-              };
-            }
+          if (!values.employerName) {
+            errors.employerName = requiredError;
+          }
         }
         
         return errors;
@@ -141,18 +144,26 @@ export const AddEntryForm = ({ onSubmit, onCancel } : Props ) => {
                   component={TextField}
                 />
                 <Field
-                  label="SickLeave Start Date"
+                  label="SickLeave Start Date (optional)"
                   placeholder="YYYY-MM-DD"
                   name="sickLeave.startDate"
                   component={TextField}
                 />
                 <Field
-                  label="SickLeave End Date"
+                  label="SickLeave End Date (optional)"
                   placeholder="YYYY-MM-DD"
                   name="sickLeave.endDate"
                   component={TextField}
                 />
-              </> : null
+              </> :
+              (type === 'HealthCheck') ?
+                <Field
+                  label="healthCheckRating"
+                  name="healthCheckRating"
+                  component={NumberField}
+                  min={0}
+                  max={3}
+                /> : null
             }
             
             <Grid>

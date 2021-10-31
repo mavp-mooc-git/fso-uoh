@@ -68,7 +68,8 @@ const PatientDetails = () => {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     } catch (e: unknown | any) {
       console.error(e.response?.data || 'Unknown Error');
-      setError(e.response?.data?.error || 'Unknown error');
+      //setError(e.response?.data?.error || 'Unknown error');
+      setError(e.response?.data || 'Unknown error');
     }
   };
 
